@@ -1,0 +1,1258 @@
+body {
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.gts-input {
+    width: 100%;
+    padding: .35rem .6rem;
+    border-radius: .6rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    outline: none;
+    font-size: .875rem;
+    line-height: 1.2;
+}
+
+.gts-input:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 3px rgba(199, 210, 254, .8);
+}
+
+.gts-select {
+    width: 100%;
+    padding: .5rem 2.25rem .5rem .75rem;
+    border-radius: .75rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 1rem 1rem;
+}
+
+.gts-select:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 3px rgba(199, 210, 254, .8);
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Saved (view mode): look like plain text */
+.view-mode .gts-editable {
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Keep select arrow hidden in view mode (optional) */
+.view-mode select.gts-editable {
+    background-image: none !important;
+    padding-right: 0 !important;
+}
+
+/* Editing mode: restore normal input look */
+.editing .gts-editable {
+    border-color: #e2e8f0 !important;
+    background: #fff !important;
+    padding: .5rem .75rem !important;
+}
+
+tr.view-mode .gts-editable {
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+tr.editing .gts-editable {
+    border-color: #e2e8f0 !important;
+    background: #fff !important;
+}
+
+/* Nice separation line between each entry */
+tr.pm-header {
+    border-top: 1px solid #e2e8f0;
+}
+
+/* view mode → look like plain text */
+tr.view-mode .gts-input,
+tr.view-mode .gts-select {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* editing → normal input look */
+tr.editing .gts-input,
+tr.editing .gts-select {
+    border-color: #e2e8f0 !important;
+    background: #fff !important;
+}
+
+.pm-act {
+    width: 36px;
+    /* w-9 */
+    height: 36px;
+    /* h-9 */
+    border-radius: 12px;
+    /* rounded-xl */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+    transition: .15s;
+    line-height: 0;
+}
+
+.pm-act:active {
+    transform: scale(.98);
+}
+
+.pm-act i {
+    font-size: 16px;
+    /* force same icon size */
+    line-height: 1;
+    display: block;
+    /* perfect centering */
+}
+
+.delForm {
+    display: inline-flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.delForm button {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* ---------- MODALS: match Metals Ledger (light theme) ---------- */
+.pm-modal {
+    --bd: #e2e8f0;
+    /* slate-200 */
+    --muted: #64748b;
+    /* slate-500 */
+    --bg: #ffffff;
+    --soft: #f8fafc;
+    /* slate-50 */
+}
+
+.pm-backdrop {
+    background: rgba(15, 23, 42, .45);
+    /* slate-900/45 */
+    backdrop-filter: blur(6px);
+}
+
+.pm-panel {
+    background: var(--bg);
+    color: #0f172a;
+    /* slate-900 */
+    border: 1px solid var(--bd);
+    border-radius: 18px;
+    box-shadow: 0 25px 60px rgba(2, 6, 23, .25);
+    overflow: hidden;
+}
+
+.pm-panel-head {
+    background: var(--soft);
+    border-bottom: 1px solid var(--bd);
+}
+
+.pm-subtext {
+    color: var(--muted);
+}
+
+.pm-close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--bd);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pm-close-btn:hover {
+    background: #f1f5f9;
+}
+
+/* slate-100 */
+
+.pm-dropzone {
+    border: 2px dashed var(--bd);
+    background: #f8fafc;
+    border-radius: 18px;
+}
+
+.pm-dropzone.is-over {
+    border-color: #a5b4fc;
+    /* indigo-300 */
+    box-shadow: 0 0 0 4px rgba(199, 210, 254, .65);
+}
+
+.pm-btn {
+    height: 42px;
+    padding: 0 16px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.pm-btn-secondary {
+    border: 1px solid var(--bd);
+    background: #fff;
+}
+
+.pm-btn-secondary:hover {
+    background: #f8fafc;
+}
+
+.pm-btn-primary {
+    border: 0;
+    color: #fff;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed, #d946ef);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, .18);
+}
+
+.pm-btn-primary:hover {
+    filter: brightness(1.03);
+}
+
+.pm-file-pill {
+    border: 1px solid var(--bd);
+    background: #fff;
+    border-radius: 14px;
+}
+
+.pm-danger-mini {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #fecaca;
+    /* rose-200 */
+    background: #fff1f2;
+    /* rose-50 */
+    color: #e11d48;
+    /* rose-600 */
+}
+
+.pm-danger-mini:hover {
+    background: #ffe4e6;
+}
+
+/* Active = clearly highlighted */
+.att-item.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, .12), rgba(139, 92, 246, .12));
+    border-color: #6366f1;
+    /* indigo-500 */
+    box-shadow: 0 0 0 3px rgba(199, 210, 254, .6);
+}
+
+.att-item.active .att-name {
+    font-weight: 700;
+    color: #4338ca;
+    /* indigo-700 */
+}
+
+.att-item.active .att-meta {
+    color: #4f46e5;
+    /* indigo-600 */
+}
+
+.att-item {
+    transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+/* -------- Modal center + viewport-safe height -------- */
+.pm-modal-wrap {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* vertical center */
+    justify-content: center;
+    /* horizontal center */
+    padding: 16px;
+    /* safe padding */
+}
+
+/* Make panels responsive & never exceed screen height */
+.pm-panel--upload {
+    width: min(768px, 96vw);
+    /* max-w-3xl */
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+}
+
+.pm-panel--viewer {
+    width: min(1152px, 96vw);
+    /* max-w-6xl */
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Keep head/footer fixed, only body scrolls */
+.pm-panel-head {
+    flex: 0 0 auto;
+}
+
+.pm-panel-foot {
+    flex: 0 0 auto;
+}
+
+/* This is your middle content area scroll */
+.pm-panel-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.pm-modal-open {
+    overflow: hidden;
+}
+
+/* Spinner (icon-only) */
+.pm-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, .35);
+    border-top-color: rgba(255, 255, 255, 1);
+    border-radius: 999px;
+    display: inline-block;
+    animation: pmSpin .7s linear infinite;
+}
+
+@keyframes pmSpin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+/* Toast */
+.pm-toast {
+    pointer-events: none;
+    min-width: 260px;
+    max-width: 360px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .18);
+    background: #fff;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    transform: translateY(10px);
+    opacity: 0;
+    animation: pmToastIn .18s ease-out forwards;
+}
+
+@keyframes pmToastIn {
+    to {
+        transform: translateY(0);
+        opacity: 1
+    }
+}
+
+.pm-toast .t-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.pm-toast .t-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #0f172a;
+}
+
+.pm-toast .t-msg {
+    font-size: 12px;
+    color: #475569;
+    margin-top: 2px
+}
+
+#attPreviewImg {
+    transform-origin: center center;
+    transition: transform 0.12s ease;
+    cursor: grab;
+}
+
+#attPreviewImg.is-panning {
+    cursor: grabbing;
+}
+
+.dd2-btn::after {
+    content: none !important;
+}
+
+/* ===== KPI Cards (Total Purchase / Total Sell) ===== */
+.pm-kpi {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, .08);
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, .06);
+}
+
+.pm-kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(2, 6, 23, .10);
+    flex: 0 0 auto;
+}
+
+.pm-kpi-icon i {
+    font-size: 22px;
+}
+
+.pm-kpi-label {
+    font-size: 13px;
+    color: rgba(71, 85, 105, 1);
+    font-weight: 600;
+}
+
+.pm-kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
+.pm-kpi--purchase .pm-kpi-icon {
+    background: linear-gradient(135deg, #10b981, #22c55e, #06b6d4);
+}
+
+.pm-kpi--purchase .pm-kpi-value {
+    color: #059669;
+}
+
+.pm-kpi--sell .pm-kpi-icon {
+    background: linear-gradient(135deg, #f43f5e, #ef4444, #fb7185);
+}
+
+.pm-kpi--sell .pm-kpi-value {
+    color: #e11d48;
+}
+
+/* ===== Metal Picker (Gold/Silver/Platinum options) ===== */
+.pm-metal-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pm-metal-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background: #fff;
+    box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.pm-metal-tab:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(2, 6, 23, .09);
+}
+
+.pm-metal-tab.is-active {
+    outline: 3px solid rgba(99, 102, 241, .18);
+    border-color: rgba(99, 102, 241, .35);
+}
+
+.pm-metal-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111827;
+    font-weight: 900;
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .08);
+}
+
+.pm-metal-name {
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.pm-metal-sub {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 700;
+}
+
+/* colors */
+.pm-metal-badge--gold {
+    background: linear-gradient(135deg, #fde68a, #fbbf24, #f59e0b);
+}
+
+.pm-metal-badge--silver {
+    background: linear-gradient(135deg, #e5e7eb, #cbd5e1, #94a3b8);
+}
+
+.pm-metal-badge--platinum {
+    background: linear-gradient(135deg, #ddd6fe, #a5b4fc, #93c5fd);
+}
+
+.pm-metal-badge--misc {
+    background: linear-gradient(135deg, #fecaca, #fdba74, #fde68a);
+}
+
+/* ===== Inventory Summary Cards (like your 1st screenshot style) ===== */
+.pm-inv-card {
+    border-radius: 20px;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(2, 6, 23, .06);
+    overflow: hidden;
+}
+
+.pm-inv-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 10px 16px;
+}
+
+.pm-inv-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    color: #0f172a;
+    font-size: 18px;
+}
+
+.pm-inv-count {
+    font-weight: 800;
+    color: #475569;
+}
+
+.pm-inv-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0 16px 16px 16px;
+}
+
+@media (min-width: 768px) {
+    .pm-inv-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* ================================
+   Precious Metals UI — full CSS
+   (colors + PNG sizing + angles)
+================================== */
+
+/* ---------- Item tile card ---------- */
+.pm-item {
+    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, .08);
+    box-shadow: 0 10px 22px rgba(2, 6, 23, .05);
+    overflow: hidden;
+    background: #fff;
+}
+
+.pm-item-top {
+    padding: 12px;
+    height: 94px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+
+.pm-item-top .pm-item-icon {
+    font-size: 44px;
+    opacity: .92;
+}
+
+/* If you use PNG inside pm-item-top */
+.pm-item-top .pm-item-icon img {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+    opacity: .98;
+    transform-origin: 50% 60%;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .14));
+}
+
+/* The label below weight: "Gold Bar", "Gold Coin", etc. */
+.pm-item-mid .pm-item-type {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: #0f172a;
+    margin-top: 4px;
+    opacity: .85;
+}
+
+.pm-item-mid {
+    padding: 10px 12px;
+    text-align: center;
+}
+
+.pm-item-mid .pm-item-name {
+    font-weight: 950;
+    color: #0f172a;
+}
+
+.pm-item-mid .pm-item-sub {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.pm-item-foot {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: #0f172a;
+    border-top: 1px solid rgba(15, 23, 42, .06);
+}
+
+/* metal gradients for items */
+.pm-item--gold .pm-item-top {
+    background: linear-gradient(135deg, #fff7d6, #fde68a, #fbbf24);
+}
+
+.pm-item--silver .pm-item-top {
+    background: linear-gradient(135deg, #f8fafc, #e5e7eb, #cbd5e1);
+}
+
+.pm-item--platinum .pm-item-top {
+    background: linear-gradient(135deg, #f5f3ff, #ddd6fe, #a5b4fc);
+}
+
+.pm-item--misc .pm-item-top {
+    background: linear-gradient(135deg, #fff7ed, #fdba74, #fecaca);
+}
+
+/* ---------- Top area of the small tiles (header bar) ---------- */
+.metalTop {
+    border-radius: 16px 16px 0 0;
+    color: #111827;
+}
+
+/* Weight-based accent colors for tile header */
+.metalTop.accent-w-gold {
+    background: linear-gradient(180deg, #FDE68A 0%, #F59E0B 100%);
+    /* 100g */
+}
+
+.metalTop.accent-w-green {
+    background: linear-gradient(180deg, #BBF7D0 0%, #34D399 100%);
+    /* 131.103g */
+}
+
+.metalTop.accent-w-blue {
+    background: linear-gradient(180deg, #BFDBFE 0%, #60A5FA 100%);
+    /* 81.103g */
+}
+
+.metalTop.accent-w-purple {
+    background: linear-gradient(180deg, #E9D5FF 0%, #A78BFA 100%);
+    /* 62.206g */
+}
+
+/* fallback palette for other weights */
+.metalTop.accent-w-rose {
+    background: linear-gradient(180deg, #FECDD3 0%, #FB7185 100%);
+}
+
+.metalTop.accent-w-amber {
+    background: linear-gradient(180deg, #FDE68A 0%, #FBBF24 100%);
+}
+
+.metalTop.accent-w-teal {
+    background: linear-gradient(180deg, #99F6E4 0%, #2DD4BF 100%);
+}
+
+.metalTop.accent-w-slate {
+    background: linear-gradient(180deg, #E2E8F0 0%, #94A3B8 100%);
+}
+
+/* ---------- Icon look (tile icon container) ---------- */
+.metalIcon {
+    width: 72px;
+    /* slightly larger for premium look */
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, .85),
+            rgba(255, 255, 255, .55));
+
+    border: 1px solid rgba(0, 0, 0, .08);
+    backdrop-filter: blur(8px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .65),
+        0 10px 22px rgba(0, 0, 0, .08);
+    overflow: hidden;
+}
+
+/* PNG icon inside tile */
+.metalIcon img {
+    height: 100%;
+    width: 100%;
+    max-height: 62px;
+    max-width: 62px;
+    object-fit: contain;
+    display: block;
+    opacity: .98;
+    transform-origin: 50% 60%;
+    filter:
+        drop-shadow(0 10px 18px rgba(0, 0, 0, .18)) drop-shadow(0 1px 1px rgba(255, 255, 255, .35));
+}
+
+/* Base metal image */
+.pm-metal-img {
+    --rot: 0deg;
+    --ty: 0px;
+    --tx: 0px;
+    --sc: 1;
+
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--sc));
+    transition: transform .25s ease;
+    will-change: transform;
+}
+
+/* Rotation set */
+.pm-metal-img.tilt-1 {
+    --rot: -16deg;
+    --ty: 2px;
+    --sc: 1.03;
+}
+
+.pm-metal-img.tilt-2 {
+    --rot: -10deg;
+    --ty: 1px;
+    --sc: 1.02;
+}
+
+.pm-metal-img.tilt-3 {
+    --rot: -4deg;
+    --ty: 2px;
+    --sc: 1.01;
+}
+
+.pm-metal-img.tilt-4 {
+    --rot: 5deg;
+    --ty: 1px;
+    --sc: 1.02;
+}
+
+.pm-metal-img.tilt-5 {
+    --rot: 12deg;
+    --ty: 2px;
+    --sc: 1.03;
+}
+
+.pm-metal-img.tilt-6 {
+    --rot: 18deg;
+    --ty: 1px;
+    --sc: 1.04;
+}
+
+/* Optional: a tiny horizontal shift to make it feel less repetitive */
+.pm-metal-img.shift-1 {
+    --tx: -2px;
+}
+
+.pm-metal-img.shift-2 {
+    --tx: 2px;
+}
+
+.pm-metal-img.shift-3 {
+    --tx: 0px;
+}
+
+.metalIcon:hover .pm-metal-img {
+    transform: translate(var(--tx), calc(var(--ty) - 2px)) rotate(var(--rot)) scale(calc(var(--sc) + 0.02));
+}
+
+/* ---------- Inventory title icon style ---------- */
+.pm-inv-title--icon {
+    gap: 10px;
+}
+
+.pm-inv-metal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid rgba(15, 23, 42, .10);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+}
+
+.pm-inv-metal-icon .pm-metal-svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.pm-inv-metal-name {
+    font-weight: 900;
+}
+
+/* inventory card metal icon backgrounds */
+.pm-inv-card[data-metal="gold"] .pm-inv-metal-icon {
+    background: linear-gradient(135deg, #fff7d6, #fde68a, #fbbf24);
+}
+
+.pm-inv-card[data-metal="silver"] .pm-inv-metal-icon {
+    background: linear-gradient(135deg, #f8fafc, #e5e7eb, #cbd5e1);
+}
+
+.pm-inv-card[data-metal="platinum"] .pm-inv-metal-icon {
+    background: linear-gradient(135deg, #f5f3ff, #ddd6fe, #a5b4fc);
+}
+
+.pm-inv-card[data-metal="miscellaneous"] .pm-inv-metal-icon {
+    background: linear-gradient(135deg, #fff7ed, #fdba74, #fecaca);
+}
+
+/* 10 strong variants (rotation + translate + scale) */
+.pm-metal-img.v1 {
+    transform: rotate(-14deg) translate(0px, 2px) scale(1.04);
+}
+
+.pm-metal-img.v2 {
+    transform: rotate(-9deg) translate(1px, 0px) scale(1.02);
+}
+
+.pm-metal-img.v3 {
+    transform: rotate(-5deg) translate(0px, 1px) scale(1.03);
+}
+
+.pm-metal-img.v4 {
+    transform: rotate(-1deg) translate(1px, 1px) scale(1.01);
+}
+
+.pm-metal-img.v5 {
+    transform: rotate(3deg) translate(0px, 0px) scale(1.02);
+}
+
+.pm-metal-img.v6 {
+    transform: rotate(7deg) translate(-1px, 1px) scale(1.03);
+}
+
+.pm-metal-img.v7 {
+    transform: rotate(11deg) translate(0px, 2px) scale(1.02);
+}
+
+.pm-metal-img.v8 {
+    transform: rotate(15deg) translate(-1px, 0px) scale(1.04);
+}
+
+.pm-metal-img.v9 {
+    transform: rotate(-18deg) translate(1px, 1px) scale(1.01);
+}
+
+.pm-metal-img.v10 {
+    transform: rotate(18deg) translate(0px, 1px) scale(1.02);
+}
+
+/* Bars: stronger angle + more depth */
+.pm-metal-img.pm-img--bar.v1  { transform: rotate(-20deg) translate(-2px, 4px) scale(1.07); }
+.pm-metal-img.pm-img--bar.v2  { transform: rotate(-14deg) translate( 1px, 2px) scale(1.05); }
+.pm-metal-img.pm-img--bar.v3  { transform: rotate(-9deg)  translate(-1px, 3px) scale(1.06); }
+.pm-metal-img.pm-img--bar.v4  { transform: rotate(-4deg)  translate( 2px, 2px) scale(1.04); }
+.pm-metal-img.pm-img--bar.v5  { transform: rotate( 4deg)  translate(-1px, 1px) scale(1.05); }
+.pm-metal-img.pm-img--bar.v6  { transform: rotate( 9deg)  translate( 1px, 3px) scale(1.06); }
+.pm-metal-img.pm-img--bar.v7  { transform: rotate( 14deg) translate(-2px, 2px) scale(1.05); }
+.pm-metal-img.pm-img--bar.v8  { transform: rotate( 20deg) translate( 1px, 4px) scale(1.07); }
+.pm-metal-img.pm-img--bar.v9  { transform: rotate(-24deg) translate( 2px, 2px) scale(1.04); }
+.pm-metal-img.pm-img--bar.v10 { transform: rotate( 24deg) translate(-1px, 2px) scale(1.04); }
+
+/* Coins: smaller angle (keep premium look) */
+.pm-metal-img.pm-img--coin.v1  { transform: rotate(-10deg) translate(0px, 1px) scale(1.03); }
+.pm-metal-img.pm-img--coin.v2  { transform: rotate(-6deg)  translate(1px, 0px) scale(1.02); }
+.pm-metal-img.pm-img--coin.v3  { transform: rotate(-3deg)  translate(0px, 1px) scale(1.02); }
+.pm-metal-img.pm-img--coin.v4  { transform: rotate(-1deg)  translate(1px, 1px) scale(1.01); }
+.pm-metal-img.pm-img--coin.v5  { transform: rotate( 2deg)  translate(0px, 0px) scale(1.02); }
+.pm-metal-img.pm-img--coin.v6  { transform: rotate( 4deg)  translate(-1px, 1px) scale(1.02); }
+.pm-metal-img.pm-img--coin.v7  { transform: rotate( 6deg)  translate(0px, 1px) scale(1.02); }
+.pm-metal-img.pm-img--coin.v8  { transform: rotate( 10deg) translate(-1px, 0px) scale(1.03); }
+.pm-metal-img.pm-img--coin.v9  { transform: rotate(-12deg) translate(1px, 1px) scale(1.01); }
+.pm-metal-img.pm-img--coin.v10 { transform: rotate( 12deg) translate(0px, 1px) scale(1.01); }
+
+.pm-tile-ico {
+    font-size: 42px;
+    line-height: 1;
+    display: inline-block;
+}
+
+.pm-shape-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pmShapeTab {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, .12);
+    background: #fff;
+    font-weight: 700;
+}
+
+.pmShapeTab.is-active {
+    background: #0f172a;
+    color: #fff;
+}
+
+.dd2-panel {
+    z-index: 999999 !important;
+}
+
+.dd2-btn {
+    cursor: pointer;
+}
+
+/* Make table look more premium */
+.pm-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.pm-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Row base */
+tr.pm-header {
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+tr.pm-header td {
+    border-bottom: 1px solid #eef2f7;
+}
+
+/* ===========================
+   Inventory Summary Tiles (NEW)
+=========================== */
+
+.pmTile {
+    border-radius: 20px;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(2, 6, 23, .06);
+}
+
+/* top row = image left + text right in ONE background */
+.pmTileTop {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--pmTileBg);
+}
+
+/* left image box */
+.pmTileImg {
+    position: relative;
+    overflow: visible;
+    width: 92px;
+    height: 76px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background: rgba(255,255,255,.45);
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 10px 22px rgba(0,0,0,.08); */
+}
+
+.pmTileImg::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    /* move shadow under image */
+    width: 68px;
+    /* shadow size */
+    height: 16px;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, .40);
+    filter: blur(12px);
+    border-radius: 999px;
+    z-index: 0;
+}
+
+.pmTileImg img {
+    position: relative;
+    z-index: 1;
+    width: 70px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .14));
+}
+
+/* right text */
+.pmTileTxt {
+    min-width: 0;
+}
+
+.pmTileWeight {
+    font-weight: 950;
+    font-size: 22px;
+    line-height: 1.05;
+    color: #0f172a;
+}
+
+.pmTileMeta {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(15, 23, 42, .70);
+}
+
+/* bottom pills */
+.pmTileBottom {
+    background: #fff;
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Just text (no background) above the pill */
+.pmTileWeightOnly {
+    font-weight: 900;
+    color: #0f172a;
+    opacity: .9;
+    line-height: 1;
+}
+
+/* Single centered pill */
+.pmTilePill--pcs {
+    width: 100%;
+    max-width: 170px;
+    text-align: center;
+    border: 1px solid rgba(15, 23, 42, .08);
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-weight: 900;
+    color: var(--pmTileText, #0f172a);
+    border: 1px solid rgba(15, 23, 42, .10);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .65), 0 10px 20px rgba(2, 6, 23, .10);
+}
+
+
+.pmTilePill {
+    width: 100%;
+    max-width: 170px;
+    text-align: center;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-weight: 900;
+    color: var(--pmTileText, #0f172a);
+    border: 1px solid rgba(15, 23, 42, .10);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .75),
+        inset 0 -6px 12px rgba(0, 0, 0, .06),
+        0 10px 20px rgba(2, 6, 23, .10);
+    background: transparent;
+    /* ✅ so the radial class fully controls bg */
+}
+
+.pmTilePill--split {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pmTilePillCount {
+    font-weight: 950;
+}
+
+/* 5 accents (repeat after 5) */
+.pm-accent-gold {
+    --pmTileBg: linear-gradient(135deg, rgba(253, 202, 49, .55), rgba(253, 202, 49, .18));
+    --pmTilePill: rgba(253, 202, 49, .28);
+    --pmTileText: #7a4b00;
+}
+
+.pm-accent-mint {
+    --pmTileBg: linear-gradient(135deg, rgba(52, 211, 153, .45), rgba(52, 211, 153, .14));
+    --pmTilePill: rgba(52, 211, 153, .22);
+    --pmTileText: #065f46;
+}
+
+.pm-accent-blue {
+    --pmTileBg: linear-gradient(135deg, rgba(96, 165, 250, .42), rgba(96, 165, 250, .12));
+    --pmTilePill: rgba(96, 165, 250, .20);
+    --pmTileText: #1e3a8a;
+}
+
+.pm-accent-purple {
+    --pmTileBg: linear-gradient(135deg, rgba(167, 139, 250, .45), rgba(167, 139, 250, .13));
+    --pmTilePill: rgba(167, 139, 250, .22);
+    --pmTileText: #4c1d95;
+}
+
+.pm-accent-peach {
+    --pmTileBg: linear-gradient(135deg, rgba(251, 146, 60, .40), rgba(251, 146, 60, .12));
+    --pmTilePill: rgba(251, 146, 60, .20);
+    --pmTileText: #7c2d12;
+}
+
+.pmTilePill--radial {
+    /* edges lighter = more transparent, center darker = more solid */
+    background: linear-gradient(90deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) 100%);
+}
+
+/* per accent override (fallback without color-mix) */
+.pm-accent-gold .pmTilePill--radial {
+    background: linear-gradient(90deg, rgba(253, 202, 49, .14) 0%, rgba(253, 202, 49, .30) 18%, rgba(253, 202, 49, .40) 50%, rgba(253, 202, 49, .30) 82%, rgba(253, 202, 49, .14) 100%);
+}
+
+.pm-accent-mint .pmTilePill--radial {
+    background: linear-gradient(90deg, rgba(52, 211, 153, .12) 0%, rgba(52, 211, 153, .26) 18%, rgba(52, 211, 153, .34) 50%, rgba(52, 211, 153, .26) 82%, rgba(52, 211, 153, .12) 100%);
+}
+
+.pm-accent-blue .pmTilePill--radial {
+    background: linear-gradient(90deg, rgba(96, 165, 250, .12) 0%, rgba(96, 165, 250, .24) 18%, rgba(96, 165, 250, .32) 50%, rgba(96, 165, 250, .24) 82%, rgba(96, 165, 250, .12) 100%);
+}
+
+.pm-accent-purple .pmTilePill--radial {
+    background: linear-gradient(90deg, rgba(167, 139, 250, .12) 0%, rgba(167, 139, 250, .26) 18%, rgba(167, 139, 250, .34) 50%, rgba(167, 139, 250, .26) 82%, rgba(167, 139, 250, .12) 100%);
+}
+
+.pm-accent-peach .pmTilePill--radial {
+    background: linear-gradient(90deg, rgba(251, 146, 60, .12) 0%, rgba(251, 146, 60, .24) 18%, rgba(251, 146, 60, .32) 50%, rgba(251, 146, 60, .24) 82%, rgba(251, 146, 60, .12) 100%);
+}
+
+/* keep your existing hidden behavior */
+tr.pm-detail.hidden {
+    display: none;
+}
+
+/* the animated wrapper inside td */
+.pm-detail-anim {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+}
+
+/* when open, max-height is driven by CSS variable set from JS */
+.pm-detail-anim.is-open {
+    max-height: var(--pm-detail-max, 0px);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pm-header.pm-zebra-odd td {
+    background: #ffffff;
+}
+
+.pm-header.pm-zebra-even td {
+    background: rgba(226, 232, 240, .75);
+}
+
+/* slate-200/75 */
+
+.pm-header:hover td {
+    background: rgba(224, 231, 255, .75) !important;
+}
+
+/* indigo-50 */
+
+.pm-header.pm-zebra-even td:first-child {
+    position: relative;
+}
+
+.pm-header.pm-zebra-even td:first-child::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .35);
+    /* slate-900/35 */
+}
+
+/* When row is closed (view mode), make inputs NOT capture mouse at all */
+tr.pm-header.view-mode input.gts-editable,
+tr.pm-header.view-mode select.gts-editable,
+tr.pm-header.view-mode textarea.gts-editable,
+tr.pm-header.view-mode .dd2 {
+    pointer-events: none !important;
+    /* click passes to <tr> */
+    cursor: pointer !important;
+    /* pointer everywhere */
+}
+
+/* But action buttons must stay clickable */
+tr.pm-header .pm-actions,
+tr.pm-header .pm-actions * {
+    pointer-events: auto !important;
+    cursor: default !important;
+}
+
+/* Make Total Purchase input behave like click-through in view mode */
+tr.pm-header.view-mode .pm-row-total {
+    pointer-events: none !important;
+    /* click goes to <tr> */
+    cursor: pointer !important;
+}
