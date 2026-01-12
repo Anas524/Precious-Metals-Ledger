@@ -19,6 +19,13 @@
             return String(v ?? '').replace(/[^\d.-]/g, '');
         }
 
+        function escapeHtml(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function formatAED(val) {
             const n = Number(unformat(val));
             if (isNaN(n)) return '';
@@ -181,23 +188,53 @@
             return [];
         }
 
+        function weightLongLabel(label) {
+            const s = String(label || '').trim();
+            if (!s) return s;
+
+            // --- OUNCES ---
+            const oz = s.match(/^(\d+(?:\.\d+)?)\s*oz$/i);
+            if (oz) {
+                const num = Number(oz[1]);
+                return `${oz[1]} ${num === 1 ? 'ounce' : 'ounces'}`;
+            }
+
+            // --- GRAMS ---
+            const g = s.match(/^(\d+(?:\.\d+)?)\s*g$/i);
+            if (g) {
+                const num = Number(g[1]);
+                return `${g[1]} ${num === 1 ? 'gram' : 'grams'}`;
+            }
+
+            // If already long (rare), keep as-is
+            return s;
+        }
+
         // Convert a weight value ("100", "31.1035", etc.) into label text ("100 g", "1 oz", ...)
         let $weightProbeSelect = null;
+        // Convert weight to label used by Inventory Summary grouping
         function weightLabelFromValue(rawWeight) {
             const raw = String(rawWeight ?? '').trim();
             if (!raw) return 'Unknown';
 
-            // Use your existing normalizer (you mentioned you have this)
-            const w = (typeof normalizeWeightToOptionValue === 'function')
-                ? normalizeWeightToOptionValue(raw)
-                : raw;
+            const w = normalizeWeightToOptionValue(raw);
+            const n = parseFloat(w);
 
+            const near = (a, b, eps = 0.0005) => Math.abs(a - b) <= eps;
+
+            // Force ounce labels for oz weights (prevents "31.1035 g (1 oz)" showing)
+            if (Number.isFinite(n)) {
+                if (near(n, 31.1035)) return '1 oz';
+                if (near(n, 62.207)) return '2 oz';
+                if (near(n, 155.5175)) return '5 oz';
+                if (near(n, 311.035)) return '10 oz';
+            }
+
+            // fallback to your existing select label (grams etc.)
             if (!$weightProbeSelect) {
-                // Build a probe select once using your existing itemRowHtml options
                 $weightProbeSelect = $(itemRowHtml(0)).find('select.pm-weight-select').first();
             }
 
-            // Find matching option by value
             const $opt = $weightProbeSelect.find(`option[value="${CSS.escape(String(w))}"]`).first();
             return $opt.length ? $opt.text().trim() : (String(w) + ' g');
         }
@@ -680,84 +717,126 @@
             const n = i + 1;
 
             return `
-                <tr data-item-row="${i}" class="border-b border-slate-100">
-                <td class="px-3 py-2 font-semibold text-slate-700">${n}</td>
+            <tr data-item-row="${i}" class="border-b border-slate-100">
+                <td class="px-3 py-3">
+                <!-- Item wrapper -->
+                <div class="rounded-2xl pm-items-dark shadow-sm overflow-hidden">
 
-                <td class="px-3 py-2">
-                    <input name="items[${i}][brand_name]" class="gts-input gts-editable" disabled>
-                </td>
+                    <!-- Item header -->
+                    <div class="mb-4">
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-extrabold pm-items-badge">
+                            Item ${n}
+                        </span>
+                    </div>
 
-                <td class="px-3 py-2">
-                    <input name="items[${i}][certificate_no]" class="gts-input gts-editable" disabled>
-                </td>
+                    <!-- Two boxes -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
 
-                <td class="px-3 py-2">
-                    <select name="items[${i}][metal_type]" class="gts-select gts-editable" disabled>
-                    <option value="">Select</option>
-                    <option value="gold">Gold</option>
-                    <option value="silver">Silver</option>
-                    <option value="platinum">Platinum</option>
-                    <option value="miscellaneous">Miscellaneous</option>
-                    </select>
-                </td>
+                    <!-- LEFT SIDE -->
+                    <div class="rounded-2xl pm-items-surface p-4 h-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-                <td class="px-3 py-2">
-                    <select name="items[${i}][metal_shape]" class="gts-select gts-editable" disabled>
-                    <option value="">Select</option>
-                    <option value="bar">Bar</option>
-                    <option value="coin">Coin</option>
-                    <option value="granules">Granules</option>
-                    <option value="packs">Packs</option>
-                    <option value="other">Other</option>
-                    </select>
-                </td>
+                        <div>
+                            <div class="pm-items-label mb-1">Brand</div>
+                            <input name="items[${i}][brand_name]" class="gts-input gts-editable" disabled>
+                        </div>
 
-                <td class="px-3 py-2">
-                <div class="pm-weight-wrap space-y-1">
-                    <select class="pm-weight-select gts-select gts-editable w-full" name="items[${i}][weight]" disabled>
-                        <option value="">Select</option>
+                        <div>
+                            <div class="pm-items-label mb-1">Certificate</div>
+                            <input name="items[${i}][certificate_no]" class="gts-input gts-editable" disabled>
+                        </div>
 
-                        <optgroup label="GRAMS (G)">
-                            <option value="5">5 g</option>
-                            <option value="10">10 g</option>
-                            <option value="15">15 g</option>
-                            <option value="20">20 g</option>
-                            <option value="31.1035">31.1035 g (1 oz)</option>
-                            <option value="50">50 g</option>
-                            <option value="100">100 g</option>
-                        </optgroup>
+                        <div>
+                            <div class="pm-items-label mb-1">Metal</div>
+                            <select name="items[${i}][metal_type]" class="gts-select gts-editable" disabled>
+                            <option value="">Select</option>
+                            <option value="gold">Gold</option>
+                            <option value="silver">Silver</option>
+                            <option value="platinum">Platinum</option>
+                            <option value="miscellaneous">Miscellaneous</option>
+                            </select>
+                        </div>
 
-                        <optgroup label="OUNCES (OZ)">
-                            <option value="31.1035">1 oz</option>
-                            <option value="62.207">2 oz</option>
-                            <option value="155.5175">5 oz</option>
-                            <option value="311.035">10 oz</option>
-                        </optgroup>
+                        <div>
+                            <div class="pm-items-label mb-1">Shape</div>
+                            <select name="items[${i}][metal_shape]" class="gts-select gts-editable" disabled>
+                            <option value="">Select</option>
+                            <option value="bar">Bar</option>
+                            <option value="coin">Coin</option>
+                            <option value="granules">Granules</option>
+                            <option value="packs">Packs</option>
+                            <option value="other">Other</option>
+                            </select>
+                        </div>
 
-                        <option value="custom">Custom…</option>
-                    </select>
+                        <div class="sm:col-span-2">
+                            <div class="pm-items-label mb-1">Weight</div>
+                            <div class="pm-weight-wrap space-y-1">
+                            <select class="pm-weight-select gts-select gts-editable w-full" name="items[${i}][weight]" disabled>
+                                <option value="">Select</option>
 
-                    <!-- shown only when custom selected -->
-                    <input type="number" step="0.001" min="0"
-                        class="pm-weight-custom gts-input gts-editable hidden"
-                        data-weight-custom-for="${i}"
-                        placeholder="Enter custom weight"
-                    disabled>
+                                <optgroup label="GRAMS (G)">
+                                <option value="5">5 g</option>
+                                <option value="10">10 g</option>
+                                <option value="15">15 g</option>
+                                <option value="20">20 g</option>
+                                <option value="31.1035">31.1035 g (1 oz)</option>
+                                <option value="50">50 g</option>
+                                <option value="100">100 g</option>
+                                </optgroup>
+
+                                <optgroup label="OUNCES (OZ)">
+                                <option value="31.1035">1 oz</option>
+                                <option value="62.207">2 oz</option>
+                                <option value="155.5175">5 oz</option>
+                                <option value="311.035">10 oz</option>
+                                </optgroup>
+
+                                <option value="custom">Custom…</option>
+                            </select>
+
+                            <input type="number" step="0.001" min="0"
+                                class="pm-weight-custom gts-input gts-editable hidden"
+                                data-weight-custom-for="${i}"
+                                placeholder="Enter custom weight"
+                                disabled>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="rounded-2xl pm-items-surface p-4 h-full">
+                        <div class="grid grid-cols-1 gap-3">
+                        <div>
+                            <div class="pm-items-label mb-1">Purchase</div>
+                            <input name="items[${i}][purchase_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
+                        </div>
+
+                        <div>
+                            <div class="pm-items-label mb-1">Sell</div>
+                            <input name="items[${i}][sell_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
+                        </div>
+
+                        <div>
+                            <div class="pm-items-label mb-1">Sell Date</div>
+                            <input name="items[${i}][sell_date]" type="date" class="gts-input gts-editable" disabled>
+
+                            <button type="button"
+                                class="pm-show-summary-btn mt-3 hidden w-full px-3 py-2 rounded-xl text-sm font-extrabold
+                                    bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30"
+                                data-action="show-in-summary">
+                                Show in Inventory Summary
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+
+                    </div>
                 </div>
                 </td>
-
-                <td class="px-3 py-2">
-                    <input name="items[${i}][purchase_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
-                </td>
-
-                <td class="px-3 py-2">
-                    <input name="items[${i}][sell_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
-                </td>
-
-                <td class="px-3 py-2">
-                    <input name="items[${i}][sell_date]" type="date" class="gts-input gts-editable" disabled>
-                </td>
-                </tr>
+            </tr>
             `;
         }
 
@@ -869,7 +948,89 @@
             initDetailDropdowns($detail);
 
             updateHeaderPurchaseTotal($header, $detail);
+            toggleShowSummaryBtn($detail);
         }
+
+        function prettyTitle(s) {
+            return (s || '—').replace(/\b\w/g, c => c.toUpperCase());
+        }
+        function prettyShapeLabel(s) {
+            const map = { bar: 'Bar', coin: 'Coin', granules: 'Granules', packs: 'Packs', other: 'Other', unknown: 'Other' };
+            const k = String(s || '').toLowerCase();
+            return map[k] || (k.charAt(0).toUpperCase() + k.slice(1));
+        }
+
+        function flashOrGhostTile(metal, shape, shortW, opts = {}) {
+            const forceGhost = !!opts.forceGhost;
+
+            // make sure correct metal is visible (important)
+            ACTIVE_METAL = metal;
+            ACTIVE_SHAPE = 'All';
+
+            // render summary
+            buildSummaryFromDOM();
+
+            // scroll to Inventory Summary
+            document.getElementById('invSummary')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // if not forcing ghost, try flash existing tile
+            const $found = $(`#invSummary .pmTile[data-metal="${metal}"][data-shape="${shape}"][data-weight="${shortW}"]`).first();
+            if ($found.length && !forceGhost) {
+                $found.addClass('pmTileFlash');
+                setTimeout(() => $found.removeClass('pmTileFlash'), 1400);
+                return;
+            }
+
+            // otherwise show SOLD ghost as first tile in the grid
+            const longW = weightLongLabel(shortW);
+            const accent = 'pm-accent-sold';
+            const icon = metalIconPngHtml(metal, shape, 0);
+
+            const ghost = $(`
+                <div class="pmTile pmTileGhost ${accent}">
+                <div class="pmTileTop">
+                    <div class="pmTileImg">${icon}</div>
+                    <div class="pmTileTxt">
+                    <div class="pmTileWeight">${escapeHtml(shortW)}</div>
+                    <div class="pmTileMeta">${escapeHtml(prettyTitle(metal))} ${escapeHtml(prettyShapeLabel(shape))} • SOLD</div>
+                    </div>
+                </div>
+                <div class="pmTileBottom">
+                    <div class="pmTileWeightOnly">${escapeHtml(longW)}</div>
+                    <div class="pmTilePill pmTilePill--pcs pmTilePill--radial">1 pc</div>
+                </div>
+                </div>
+            `);
+
+            // put it as FIRST tile of the CURRENT metal grid (pushes others right)
+            let $grid = $(`#invSummary .pm-inv-card[data-metal="${metal}"] .pm-inv-grid`).first();
+            if (!$grid.length) $grid = $('#invSummary .pm-inv-grid').first();
+
+            if ($grid.length) $grid.prepend(ghost);
+            else $('#invSummary').prepend(ghost);
+
+            setTimeout(() => ghost.remove(), 1700);
+        }
+
+        $tbody.on('click', '[data-action="show-in-summary"]', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const $itemRow = $(this).closest('tr[data-item-row]');
+            const $detail = $(this).closest('tr.pm-detail');
+
+            const metal = normMetal($itemRow.find('select[name$="[metal_type]"]').val());
+            const shape = normShape($itemRow.find('select[name$="[metal_shape]"]').val());
+            const wRaw = $itemRow.find('select[name$="[weight]"]').val() || $itemRow.find('.pm-weight-custom').val();
+            const shortW = weightLabelFromValue(wRaw);
+
+            if (!metal || !shape || !shortW) {
+                showInfo('Please fill Metal, Shape and Weight to locate it in Inventory Summary.');
+                return;
+            }
+
+            flashOrGhostTile(metal, shape, shortW, { forceGhost: true });
+        });
 
         function updateTotalsFromDOM() {
             let purchaseTotal = 0;
@@ -950,12 +1111,13 @@
                 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10'
             ];
             const v = variants[idx % variants.length];
+            const typeClass = wantsCoin ? 'pm-img--coin' : 'pm-img--bar';
 
             return `
                 <img
                 src="${src}"
                 alt="${m} ${wantsCoin ? 'coin' : 'bar'}"
-                class="pm-metal-img ${v}"
+                class="pm-metal-img ${typeClass} ${v}"
                 loading="lazy"
                 />
             `;
@@ -973,6 +1135,14 @@
                 const items = getItemsForDetail($detail);
 
                 items.forEach(it => {
+
+                    const sellP = String(it.sell_price ?? '').trim();
+                    const sellD = String(it.sell_date ?? '').trim();
+
+                    // if sold -> hide from inventory summary
+                    const isSold = (num(sellP) > 0) || !!sellD;
+                    if (isSold) return;
+
                     // skip totally empty padded items
                     const hasAny =
                         String(it.brand_name ?? '').trim() ||
@@ -1089,24 +1259,28 @@
                     return Array.from(wMap.entries())
                         .sort((a, b) => b[1] - a[1])
                         .map(([wLabel, count]) => {
-                            const safeW = escapeHtml(wLabel);
+                            const shortW = String(wLabel || '').trim();              // e.g. "1 oz"
+                            const longW = weightLongLabel(shortW);                 // e.g. "1 ounce"
+
+                            const safeShort = escapeHtml(shortW);
+                            const safeLong = escapeHtml(longW);
                             const idx = tileIdx++;
                             const accent = tileAccentClass(idx);
                             const icon = metalIconPngHtml(m, shapeKey, idx);
 
                             return `
-                            <div class="pmTile ${accent}">
+                            <div class="pmTile ${accent}" data-metal="${escapeHtml(m)}" data-shape="${escapeHtml(shapeKey)}" data-weight="${escapeHtml(shortW)}">
                                 <div class="pmTileTop">
                                 <div class="pmTileImg">${icon}</div>
 
                                 <div class="pmTileTxt">
-                                    <div class="pmTileWeight">${safeW}</div>
+                                    <div class="pmTileWeight">${safeShort}</div>
                                     <div class="pmTileMeta">${pretty(m)} ${prettyShape(shapeKey)}</div>
                                 </div>
                                 </div>
 
                                 <div class="pmTileBottom">
-                                <div class="pmTileWeightOnly">${safeW}</div>
+                                <div class="pmTileWeightOnly">${safeLong}</div>
 
                                 <div class="pmTilePill pmTilePill--pcs pmTilePill--radial">
                                     ${count} ${count === 1 ? 'pc' : 'pcs'}
@@ -2234,12 +2408,7 @@
             });
         }
 
-        function escapeHtml(s) {
-            return String(s ?? '')
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
+
 
         function setSelectedLabel() {
             if (!selectedFiles.length) $('#attSelectedLabel').text('No files selected yet.');
@@ -2634,6 +2803,23 @@
             } else {
                 $custom.addClass('hidden').val('');
             }
+        });
+
+        function toggleShowSummaryBtn($detail) {
+            $detail.find('tr[data-item-row]').each(function () {
+                const $row = $(this);
+                const sellP = ($row.find('input[name$="[sell_price]"]').val() || '').trim();
+                const sellD = ($row.find('input[name$="[sell_date]"]').val() || '').trim();
+
+                const show = (num(sellP) > 0) || !!sellD;
+                $row.find('.pm-show-summary-btn').toggleClass('hidden', !show);
+            });
+        }
+
+        // whenever sell fields change
+        $tbody.on('input change', 'input[name$="[sell_price]"], input[name$="[sell_date]"]', function () {
+            const $detail = $(this).closest('tr.pm-detail');
+            toggleShowSummaryBtn($detail);
         });
 
     });
