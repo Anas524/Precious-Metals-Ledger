@@ -390,14 +390,30 @@ body.pm-modal-open {
     margin-top: 2px
 }
 
-#attPreviewImg {
-    transform-origin: center center;
-    transition: transform 0.12s ease;
-    cursor: grab;
+/* Preview box must scroll when zoomed */
+#attPreviewBox{
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-#attPreviewImg.is-panning {
-    cursor: grabbing;
+/* wrapper is what we resize */
+#attPreviewImgWrap{
+  position: relative;
+  margin: 0 auto;      /* centers horizontally when smaller */
+}
+
+/* image fills wrapper */
+#attPreviewImg{
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  cursor: grab;
+}
+
+#attPreviewImg.is-panning{
+  cursor: grabbing;
 }
 
 .dd2-btn::after {
@@ -1309,4 +1325,24 @@ tr.pm-header.view-mode .pm-row-total {
     rgba(244,63,94,.22) 82%,
     rgba(244,63,94,.10) 100%
   );
+}
+
+/* The scroll container for the table */
+.pm-table-scroll{
+  max-height: 670px;
+  overflow-y: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sticky header works only inside the scrolling parent */
+.pm-sticky-head{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* keep your gradient look */
+.pm-sticky-head tr{
+  background: linear-gradient(to right, #0f172a, #1e293b, #0f172a);
 }

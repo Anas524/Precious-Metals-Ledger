@@ -422,9 +422,9 @@
 
         {{-- TABLE CARD --}}
         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-            <div class="overflow-x-auto w-full overflow-y-hidden [-webkit-overflow-scrolling:touch]">
+            <div class="pm-table-scroll w-full">
                 <table class="w-full text-sm table-fixed min-w-full md:min-w-[980px] lg:min-w-full">
-                    <thead class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-slate-700 shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
+                    <thead class="pm-sticky-head bg-white/80 backdrop-blur border-b border-slate-700 shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
                         <tr class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white">
                             <th class="px-3 py-2 text-left font-semibold text-white/90 w-16">S.no</th>
                             <th class="px-3 py-2 text-left font-semibold text-white/90 w-40">Date of purchase</th>
@@ -433,7 +433,7 @@
                             <th class="px-3 py-2 text-left font-semibold text-white/90 w-24">Qty</th>
                             <th class="px-3 py-2 text-left font-semibold text-white/90 w-52">Beneficiary</th>
                             <th class="px-3 py-2 text-right font-semibold text-white/90 w-[140px]">Total Purchase</th>
-                            <th class="px-3 py-2 text-right font-semibold text-white/90 w-[170px]">Actions</th>
+                            <th class="px-3 py-2 text-right font-semibold text-white/90 w-[160px]">Actions</th>
                         </tr>
                     </thead>
 
@@ -708,9 +708,11 @@
                     </div>
 
                     <div class="col-span-8 p-4">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden h-[440px]">
+                        <div id="attPreviewBox" class="bg-slate-50 border border-slate-200 rounded-xl h-[440px] overflow-auto">
                             <iframe id="attPreviewFrame" class="w-full h-full hidden"></iframe>
-                            <img id="attPreviewImg" class="w-full h-full object-contain hidden" />
+                            <div id="attPreviewImgWrap" class="hidden">
+                                <img id="attPreviewImg" />
+                            </div>
                             <div id="attPreviewEmpty" class="h-full flex items-center justify-center text-slate-500">
                                 Select a file to preview
                             </div>

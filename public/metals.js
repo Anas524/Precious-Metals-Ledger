@@ -2566,88 +2566,108 @@
             $('#attPreviewEmpty').addClass('hidden');
 
             if (f.type === 'pdf') {
+                $('#attPreviewImgWrap').addClass('hidden');
                 $('#attPreviewImg').addClass('hidden').attr('src', '');
-                window.attViewerResetZoom?.(); // reset zoom state
+
                 $('#attPreviewFrame')
                     .removeClass('hidden')
                     .attr('src', f.url);
+
             } else {
                 $('#attPreviewFrame').addClass('hidden').attr('src', '');
+                $('#attPreviewEmpty').addClass('hidden');
 
+                $('#attPreviewImgWrap').removeClass('hidden');
                 const $img = $('#attPreviewImg');
 
-                // IMPORTANT: bind onload BEFORE setting src
-                $img.off('load.attZoom').on('load.attZoom', function () {
-                    // choose one:
-                    // window.attViewerResetZoom?.();
-                    window.attViewerFitZoom?.();   // better UX: fits image to box first
-                });
+                $img.removeClass('hidden');
 
-                $img.removeClass('hidden').attr('src', f.url);
+                // set src
+                $img.attr('src', f.url);
+
+                // if browser cached it, force trigger load handler
+                const imgEl = $img.get(0);
+                if (imgEl && imgEl.complete) {
+                    setTimeout(() => $img.trigger('load'), 0);
+                }
             }
         });
 
         (function () {
+            const $box = $('#attPreviewBox');
+            const $wrap = $('#attPreviewImgWrap');
             const $img = $('#attPreviewImg');
-            const $box = $img.closest('.bg-slate-50'); // the preview container
 
             let scale = 1;
             const MIN = 0.5, MAX = 6, STEP = 0.25;
+
+            let natW = 0, natH = 0;
 
             // pan state
             let isDown = false;
             let startX = 0, startY = 0;
             let scrollLeft = 0, scrollTop = 0;
 
+            function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+            function centerScroll() {
+                const boxEl = $box.get(0);
+                if (!boxEl) return;
+                boxEl.scrollLeft = (boxEl.scrollWidth - boxEl.clientWidth) / 2;
+                boxEl.scrollTop = (boxEl.scrollHeight - boxEl.clientHeight) / 2;
+            }
+
             function applyScale() {
-                $img.css('transform', `scale(${scale})`);
+                if (!natW || !natH) return;
+
+                const w = Math.max(1, Math.round(natW * scale));
+                const h = Math.max(1, Math.round(natH * scale));
+
+                // resize wrapper (scroll area comes from this)
+                $wrap.css({ width: w + 'px', height: h + 'px' });
             }
 
             function resetZoom() {
                 scale = 1;
                 applyScale();
-                // reset scroll to center
-                const el = $box.get(0);
-                if (el) {
-                    el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
-                    el.scrollTop = (el.scrollHeight - el.clientHeight) / 2;
-                }
+                centerScroll();
             }
 
             function fitZoom() {
-                const imgEl = $img.get(0);
+                if (!natW || !natH) return;
+
                 const boxEl = $box.get(0);
-                if (!imgEl || !boxEl) return;
+                if (!boxEl) return;
 
-                // natural sizes
-                const nw = imgEl.naturalWidth || imgEl.width;
-                const nh = imgEl.naturalHeight || imgEl.height;
+                // small padding so it never clips by 1px borders
+                const pad = 8;
+                const bw = Math.max(1, boxEl.clientWidth - pad);
+                const bh = Math.max(1, boxEl.clientHeight - pad);
 
-                const bw = boxEl.clientWidth;
-                const bh = boxEl.clientHeight;
+                const s = Math.min(bw / natW, bh / natH);
+                scale = clamp(s, MIN, MAX);
 
-                if (!nw || !nh || !bw || !bh) return;
-
-                const s = Math.min(bw / nw, bh / nh);
-                scale = Math.max(MIN, Math.min(MAX, s));
                 applyScale();
-
-                // center
-                boxEl.scrollLeft = (boxEl.scrollWidth - boxEl.clientWidth) / 2;
-                boxEl.scrollTop = (boxEl.scrollHeight - boxEl.clientHeight) / 2;
+                centerScroll();
             }
+
+            // Expose for your existing calls
+            window.attViewerResetZoom = resetZoom;
+            window.attViewerFitZoom = fitZoom;
 
             // Buttons
             $(document).on('click', '#attZoomIn', function () {
                 if ($img.hasClass('hidden')) return;
-                scale = Math.min(MAX, scale + STEP);
+                scale = clamp(scale + STEP, MIN, MAX);
                 applyScale();
+                centerScroll();
             });
 
             $(document).on('click', '#attZoomOut', function () {
                 if ($img.hasClass('hidden')) return;
-                scale = Math.max(MIN, scale - STEP);
+                scale = clamp(scale - STEP, MIN, MAX);
                 applyScale();
+                centerScroll();
             });
 
             $(document).on('click', '#attZoomReset', function () {
@@ -2660,19 +2680,18 @@
                 fitZoom();
             });
 
-            // Mouse wheel zoom (Ctrl+wheel OR normal wheel)
+            // Wheel zoom
             $box.on('wheel', function (e) {
                 if ($img.hasClass('hidden')) return;
                 e.preventDefault();
 
                 const delta = e.originalEvent.deltaY;
-                if (delta < 0) scale = Math.min(MAX, scale + STEP);
-                else scale = Math.max(MIN, scale - STEP);
-
+                scale = clamp(scale + (delta < 0 ? STEP : -STEP), MIN, MAX);
                 applyScale();
+                centerScroll();
             });
 
-            // Drag to pan (scroll the container)
+            // Drag to pan (scroll container)
             $box.on('mousedown', function (e) {
                 if ($img.hasClass('hidden')) return;
                 isDown = true;
@@ -2699,9 +2718,16 @@
                 el.scrollTop = scrollTop - dy;
             });
 
-            // IMPORTANT: whenever you load a NEW image, call resetZoom()
-            window.attViewerResetZoom = resetZoom;
-            window.attViewerFitZoom = fitZoom;
+            // whenever a new image loads, capture natural size and fit
+            $img.off('load.attZoomFix').on('load.attZoomFix', function () {
+                natW = this.naturalWidth || 0;
+                natH = this.naturalHeight || 0;
+
+                // show wrapper properly
+                $wrap.removeClass('hidden');
+                fitZoom();
+            });
+
         })();
 
         const PRICE_SEL =
@@ -2779,16 +2805,40 @@
                 base[this.name] = $(this).val() ?? '';
             });
 
+            // grab row1 custom weight input too
+            const baseWeightSel = $row1.find('select[name$="[weight]"]').val() ?? '';
+            const baseWeightCustom = ($row1.find('.pm-weight-custom').val() ?? '').trim();
+
             // apply to all other rows
             $tb.find('tr[data-item-row]').each(function () {
                 const idx = Number($(this).attr('data-item-row'));
                 if (idx === 0) return;
 
-                $(this).find('input[name], select[name], textarea[name]').each(function () {
-                    // map name "items[2][x]" -> "items[0][x]"
+                const $tr = $(this);
+
+                // normal fields copy
+                $tr.find('input[name], select[name], textarea[name]').each(function () {
                     const field = String(this.name).replace(/^items\[\d+\]\[/, 'items[0][');
-                    if (base[field] !== undefined) $(this).val(base[field]).trigger('change').trigger('input');
+                    if (base[field] !== undefined) {
+                        $(this).val(base[field]).trigger('change').trigger('input');
+                    }
                 });
+
+                // special handling for weight custom value
+                const $wSel = $tr.find('select[name$="[weight]"]');
+                const $wCustom = $tr.find('.pm-weight-custom');
+
+                if (!$wSel.length) return;
+
+                if (String(baseWeightSel) === 'custom') {
+                    // set select to custom + show custom input + copy value
+                    $wSel.val('custom').trigger('change').trigger('input');
+                    $wCustom.removeClass('hidden').val(baseWeightCustom).trigger('input');
+                } else {
+                    // normal option weight
+                    $wSel.val(baseWeightSel).trigger('change').trigger('input');
+                    $wCustom.addClass('hidden').val('');
+                }
             });
         });
 
