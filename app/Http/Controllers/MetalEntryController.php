@@ -118,7 +118,7 @@ class MetalEntryController extends Controller
             ],
             'purchase_date' => ['required', 'date'],
 
-            'items' => ['sometimes', 'array'],
+            'items' => ['sometimes', 'nullable', 'array'],
             'items.*.brand_name' => ['nullable', 'string', 'max:255'],
             'items.*.certificate_no' => ['nullable', 'string', 'max:255'],
             'items.*.metal_type' => ['nullable', 'in:gold,silver,platinum,miscellaneous'],

@@ -1339,10 +1339,71 @@ tr.pm-header.view-mode .pm-row-total {
 .pm-sticky-head{
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 20;
+}
+
+/* Filter dropdown panel when portaled to body */
+.dd-panel.dd-panel--ported{
+  position: fixed !important;
+  z-index: 9999999 !important;
 }
 
 /* keep your gradient look */
 .pm-sticky-head tr{
   background: linear-gradient(to right, #0f172a, #1e293b, #0f172a);
+}
+
+/* Make PCS input match select height */
+.pm-pcs-input{
+  height: 44px;          /* same as h-11 */
+  padding-top: .5rem;
+  padding-bottom: .5rem; /* match gts-select vertical padding */
+}
+
+.pm-money-row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.pm-cur-toggle{
+  display: inline-flex;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.pm-cur{
+  position: relative;
+}
+
+.pm-cur input{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pm-cur span{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;              /* matches .pm-btn height */
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(255,255,255,.85);
+  cursor: pointer;
+  user-select: none;
+}
+
+.pm-cur input:checked + span{
+  background: rgba(255,255,255,.16);
+  color: #fff;
+}
+
+.pm-cur span:hover{
+  background: rgba(255,255,255,.12);
 }

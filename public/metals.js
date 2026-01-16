@@ -502,6 +502,41 @@
 
         const $tbody = $('#metalTbody');
 
+        function fmtMoneyAED(val) {
+            const n = Number(unformat(val));
+            if (!Number.isFinite(n)) return '';
+            return 'AED ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        const MONEY_SEL = '.pm-money';
+
+        $tbody.on('focus', MONEY_SEL, function () {
+            $(this).data('lastValid', $(this).val() ?? '');
+            $(this).val(unformat($(this).val()));
+        });
+
+        $tbody.on('blur', MONEY_SEL, function () {
+            const raw = unformat($(this).val()).trim();
+            if (raw === '') { $(this).data('lastValid', ''); return; }
+
+            const n = Number(raw);
+            if (!Number.isFinite(n)) {
+                $(this).val($(this).data('lastValid') || '');
+                return;
+            }
+
+            const formatted = fmtMoneyAED(n);
+            $(this).val(formatted);
+            $(this).data('lastValid', formatted);
+        });
+
+        $tbody.on('input', MONEY_SEL, function () {
+            let v = String(this.value || '').replace(/[^0-9.]/g, '');
+            const parts = v.split('.');
+            if (parts.length > 2) v = parts.shift() + '.' + parts.join('');
+            this.value = v;
+        });
+
         // Add new row (at bottom)
         $('#openCreate').on('click', function () {
             addNewRow();
@@ -705,11 +740,37 @@
                         val = unformat(val);
                     }
 
+                    if (key === 'pcs') {
+                        val = String(val || '').replace(/[^\d]/g, '');
+                    }
+
                     items[idx][key] = val;
                 });
             });
 
             return items;
+        }
+
+        function toggleCoinFields($tr) {
+            const shape = String($tr.find('select[name$="[metal_shape]"]').val() || '').toLowerCase();
+            const isCoin = (shape === 'coin');
+
+            const $certWrap = $tr.find('.pm-field-cert-wrap');
+            const $pcsWrap = $tr.find('.pm-field-pcs-wrap');
+
+            const $cert = $tr.find('input[name$="[certificate_no]"]');
+            const $pcs = $tr.find('input[name$="[pcs]"]');
+
+            if (isCoin) {
+                $certWrap.addClass('hidden');
+                $cert.val('');
+                $pcsWrap.removeClass('hidden');
+                $pcs.prop('required', true);
+            } else {
+                $certWrap.removeClass('hidden');
+                $pcsWrap.removeClass('hidden');  // PCS stays available for bar too
+                $pcs.prop('required', false);
+            }
         }
 
         // Build ONE item row HTML (all repeated fields live here)
@@ -741,6 +802,7 @@
                             <input name="items[${i}][brand_name]" class="gts-input gts-editable" disabled>
                         </div>
 
+                        <!-- Certificate wrapper (we will hide this only when shape=coin) -->
                         <div>
                             <div class="pm-items-label mb-1">Certificate</div>
                             <input name="items[${i}][certificate_no]" class="gts-input gts-editable" disabled>
@@ -769,7 +831,14 @@
                             </select>
                         </div>
 
-                        <div class="sm:col-span-2">
+                        <!-- PCS wrapper (always visible, coin can require it) -->
+                        <div class="pm-field-pcs-wrap">
+                            <div class="pm-items-label mb-1">PCS</div>
+                            <input name="items[${i}][pcs]" type="number" min="1" inputmode="numeric"
+                                    class="gts-input gts-editable pm-pcs-input" disabled>
+                        </div>
+
+                        <div>
                             <div class="pm-items-label mb-1">Weight</div>
                             <div class="pm-weight-wrap space-y-1">
                             <select class="pm-weight-select gts-select gts-editable w-full" name="items[${i}][weight]" disabled>
@@ -810,12 +879,12 @@
                     <div class="rounded-2xl pm-items-surface p-4 h-full">
                         <div class="grid grid-cols-1 gap-3">
                         <div>
-                            <div class="pm-items-label mb-1">Purchase</div>
+                            <div class="pm-items-label mb-1">Purchase (AED)</div>
                             <input name="items[${i}][purchase_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
                         </div>
 
                         <div>
-                            <div class="pm-items-label mb-1">Sell</div>
+                            <div class="pm-items-label mb-1">Sell (AED)</div>
                             <input name="items[${i}][sell_price]" type="text" inputmode="decimal" class="gts-input gts-editable" disabled>
                         </div>
 
@@ -909,8 +978,11 @@
                         return;
                     }
 
-                    if (k === 'purchase_price' || k === 'sell_price') {
-                        v = v ? formatAED(v) : '';
+                    if (k === 'purchase_price') v = v ? fmtMoneyAED(v) : '';
+                    if (k === 'sell_price') v = v ? fmtMoneyAED(v) : '';
+
+                    if (k === 'pcs') {
+                        v = String(v || '').replace(/[^\d]/g, '');
                     }
 
                     // NORMAL SETTER (all other keys)
@@ -946,6 +1018,10 @@
             $detail.find('.dd2').remove();
             $detail.find('select').removeClass('hidden').css('display', '').removeData('ddBuilt');
             initDetailDropdowns($detail);
+
+            $detail.find('tr[data-item-row]').each(function () {
+                toggleCoinFields($(this));
+            });
 
             updateHeaderPurchaseTotal($header, $detail);
             toggleShowSummaryBtn($detail);
@@ -1159,7 +1235,11 @@
                     const shape = normShape(it.metal_shape) || 'other';
                     const weightLabel = weightLabelFromValue(it.weight);
 
-                    rows.push({ metal, shape, weightLabel });
+                    // pcs logic (use PCS if provided, otherwise 1)
+                    let pcs = parseInt(String(it.pcs ?? '').replace(/[^\d]/g, ''), 10);
+                    pcs = Number.isFinite(pcs) && pcs > 0 ? pcs : 1;
+
+                    rows.push({ metal, shape, weightLabel, pcs });
                 });
             });
 
@@ -1193,7 +1273,7 @@
                 const weightMap = shapeMap.get(shape);
 
                 // weight → count
-                weightMap.set(w, (weightMap.get(w) || 0) + 1);
+                weightMap.set(w, (weightMap.get(w) || 0) + (r.pcs || 1));
             });
 
             // which metals exist (ordered)
@@ -1553,29 +1633,143 @@
             }
         }
 
-        // ---------- Custom dropdowns (FILTER ONLY) ----------
-        (function initFilterDropdowns() {
+        (function initFilterDropdownsV2() {
+            let $openWrap = null;
+
+            function closeWrap($wrap) {
+                if (!$wrap || !$wrap.length) return;
+                const $panel = $wrap.data('portedPanel') || $wrap.find('.dd-panel');
+                $panel.addClass('hidden');
+                $openWrap = null;
+
+                const onMove = $panel.data('onMove');
+                if (onMove) {
+                    $(window).off('scroll.ddFilter resize.ddFilter', onMove);
+                    $('.pm-table-scroll').off('scroll.ddFilter', onMove);
+                }
+                $(document).off('mousedown.ddFilter');
+                $(document).off('keydown.ddFilter');
+            }
+
             function closeAll() {
-                $('[data-dd] .dd-panel').addClass('hidden');
+                if ($openWrap) closeWrap($openWrap);
+                $('[data-dd]').each(function () {
+                    const $w = $(this);
+                    const $p = $w.data('portedPanel');
+                    if ($p && $p.length) $p.addClass('hidden');
+                });
+            }
+
+            function placeFilterMenu($btn, $panel) {
+                const r = $btn[0].getBoundingClientRect();
+
+                const wasHidden = $panel.hasClass('hidden');
+                if (wasHidden) $panel.removeClass('hidden').css({ visibility: 'hidden' });
+
+                // width
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const gap = 6;
+
+                const minW = Number($panel.attr('data-minw') || 220);
+                let panelW = Math.max(r.width, minW);
+                panelW = Math.min(panelW, vw - 16);
+
+                $panel.css({ width: panelW + 'px' });
+
+                // compute maxHeight + direction
+                const spaceBelow = vh - r.bottom - gap;
+                const spaceAbove = r.top - gap;
+
+                const preferUp = (vw < 640);
+                let openUp = preferUp ? (spaceAbove > 160) : (spaceBelow < 240 && spaceAbove > spaceBelow);
+
+                // set list max height (so panel doesn't go off-screen)
+                const $inner = $panel.children().first(); // your panel contains <div class="p-2 ...">
+                const maxH = openUp ? Math.max(160, spaceAbove - 12) : Math.max(160, spaceBelow - 12);
+                $inner.css({ maxHeight: maxH + 'px', overflow: 'auto' });
+
+                const panelH = $panel.outerHeight();
+                let top = openUp ? (r.top - gap - panelH) : (r.bottom + gap);
+                top = Math.max(8, Math.min(top, vh - panelH - 8));
+
+                let left = r.left;
+                left = Math.max(8, Math.min(left, vw - panelW - 8));
+
+                $panel.css({
+                    position: 'fixed',
+                    top: top + 'px',
+                    left: left + 'px',
+                    zIndex: 9999999,
+                    visibility: ''
+                });
+
+                if (wasHidden) $panel.addClass('hidden');
+            }
+
+            function openWrap($wrap) {
+                const $btn = $wrap.find('.dd-btn').first();
+                let $panel = $wrap.data('portedPanel');
+
+                // first time: portal panel to body
+                if (!$panel || !$panel.length) {
+                    $panel = $wrap.find('.dd-panel').first();
+                    $panel.addClass('dd-panel--ported');
+                    $wrap.data('portedPanel', $panel);
+                    $('body').append($panel);
+                }
+
+                // close others
+                if ($openWrap && $openWrap.get(0) !== $wrap.get(0)) closeWrap($openWrap);
+                $openWrap = $wrap;
+
+                placeFilterMenu($btn, $panel);
+                $panel.removeClass('hidden');
+
+                // re-place after layout settles
+                requestAnimationFrame(() => requestAnimationFrame(() => placeFilterMenu($btn, $panel)));
+
+                // reposition / close on scroll
+                const onMove = () => {
+                    const rr = $btn[0].getBoundingClientRect();
+                    const out =
+                        rr.bottom < 0 || rr.top > window.innerHeight || rr.right < 0 || rr.left > window.innerWidth;
+                    if (out) return closeWrap($wrap);
+                    placeFilterMenu($btn, $panel);
+                };
+
+                $panel.data('onMove', onMove);
+                $(window).on('scroll.ddFilter resize.ddFilter', onMove);
+                $('.pm-table-scroll').on('scroll.ddFilter', onMove);
+
+                // outside click close
+                $(document).off('mousedown.ddFilter').on('mousedown.ddFilter', function (e) {
+                    if ($(e.target).closest($panel).length) return;
+                    if ($(e.target).closest($btn).length) return;
+                    closeWrap($wrap);
+                });
+
+                // esc close
+                $(document).off('keydown.ddFilter').on('keydown.ddFilter', function (e) {
+                    if (e.key === 'Escape') closeWrap($wrap);
+                });
             }
 
             // open/close
-            $(document).on('click', '[data-dd] .dd-btn', function (e) {
+            $(document).off('click.ddFilterBtn').on('click.ddFilterBtn', '[data-dd] .dd-btn', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-
                 const $wrap = $(this).closest('[data-dd]');
-                const $panel = $wrap.find('.dd-panel');
-
-                // close others
-                $('[data-dd]').not($wrap).find('.dd-panel').addClass('hidden');
-
-                // toggle this one
-                $panel.toggleClass('hidden');
+                const $panel = $wrap.data('portedPanel') || $wrap.find('.dd-panel');
+                if ($panel && !$panel.hasClass('hidden') && $openWrap && $openWrap.get(0) === $wrap.get(0)) {
+                    closeWrap($wrap);
+                    return;
+                }
+                openWrap($wrap);
             });
 
             // choose option
-            $(document).on('click', '[data-dd] .dd-opt', function (e) {
+            $(document).off('click.ddFilterOpt').on('click.ddFilterOpt', '[data-dd] .dd-opt', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -1584,42 +1778,33 @@
                 const label = $.trim($opt.text());
 
                 const $wrap = $opt.closest('[data-dd]');
-                const $select = $wrap.find('select');
-                const $label = $wrap.find('.dd-label');
+                const $select = $wrap.find('select').first();
+                const $label = $wrap.find('.dd-label').first();
 
-                // set UI label + tooltip
                 $label.text(label).attr('title', label);
-
-                // set hidden select value + trigger change (your applySearchAndFilters listens to change)
                 $select.val(val).trigger('change');
 
-                // highlight selected in panel
-                $wrap.find('.dd-opt').removeClass('bg-indigo-50 text-indigo-700 font-semibold');
+                // highlight
+                const $panel = $wrap.data('portedPanel') || $wrap.find('.dd-panel');
+                $panel.find('.dd-opt').removeClass('bg-indigo-50 text-indigo-700 font-semibold');
                 $opt.addClass('bg-indigo-50 text-indigo-700 font-semibold');
 
-                // close panel
-                $wrap.find('.dd-panel').addClass('hidden');
+                closeWrap($wrap);
             });
 
-            // close on outside click / ESC
-            $(document).on('click', function () { closeAll(); });
-            $(document).on('keydown', function (e) {
-                if (e.key === 'Escape') closeAll();
-            });
-
-            // set initial highlights based on current select values
+            // initial sync highlight
             $('[data-dd]').each(function () {
                 const $wrap = $(this);
-                const $select = $wrap.find('select');
+                const $select = $wrap.find('select').first();
                 const current = $select.val() ?? '';
                 const $match = $wrap.find(`.dd-opt[data-value="${current}"]`).first();
-
                 if ($match.length) {
-                    $wrap.find('.dd-label').text($.trim($match.text()));
+                    $wrap.find('.dd-label').text($.trim($match.text())).attr('title', $.trim($match.text()));
                     $wrap.find('.dd-opt').removeClass('bg-indigo-50 text-indigo-700 font-semibold');
                     $match.addClass('bg-indigo-50 text-indigo-700 font-semibold');
                 }
             });
+
         })();
 
         function updateRowButtons($group, $header) {
@@ -1669,7 +1854,12 @@
                     : $tbody.find(`tr.pm-header[data-tmp="${id}"]`).first(); // draft uses tmp id
 
             updateHeaderPurchaseTotal($header, $detail);
+            updateTotalsFromDOM();
         });
+
+        $tbody.on('input change', 'input[name$="[sell_price]"]', function () {
+            updateTotalsFromDOM();
+        })
 
         // ---------- helpers for expand ----------
         function closeAllDetails(exceptId = null) {
@@ -2730,36 +2920,6 @@
 
         })();
 
-        const PRICE_SEL =
-            'input[name="purchase_price"], input[name="sell_price"], input[name$="[purchase_price]"], input[name$="[sell_price]"]';
-
-        $tbody.on('focus', PRICE_SEL, function () {
-            $(this).data('lastValid', $(this).val() ?? '');
-            $(this).val(unformat($(this).val()));
-        });
-
-        $tbody.on('blur', PRICE_SEL, function () {
-            const raw = unformat($(this).val()).trim();
-            if (raw === '') { $(this).data('lastValid', ''); return; }
-
-            const n = Number(raw);
-            if (isNaN(n)) {
-                $(this).val($(this).data('lastValid') || '');
-                return;
-            }
-
-            const formatted = formatAED(n);
-            $(this).val(formatted);
-            $(this).data('lastValid', formatted);
-        });
-
-        $tbody.on('input', PRICE_SEL, function () {
-            let v = String(this.value || '').replace(/[^0-9.]/g, ''); // (prices usually shouldn't be negative)
-            const parts = v.split('.');
-            if (parts.length > 2) v = parts.shift() + '.' + parts.join('');
-            this.value = v;
-        });
-
         $(document).on('click', '[data-metal-tab]', function () {
             ACTIVE_METAL = String($(this).attr('data-metal-tab') || '').toLowerCase();
             buildSummaryFromDOM();
@@ -2816,7 +2976,7 @@
 
                 const $tr = $(this);
 
-                // normal fields copy
+                // normal fields copy ( this will copy pcs also automatically)
                 $tr.find('input[name], select[name], textarea[name]').each(function () {
                     const field = String(this.name).replace(/^items\[\d+\]\[/, 'items[0][');
                     if (base[field] !== undefined) {
@@ -2828,17 +2988,18 @@
                 const $wSel = $tr.find('select[name$="[weight]"]');
                 const $wCustom = $tr.find('.pm-weight-custom');
 
-                if (!$wSel.length) return;
-
-                if (String(baseWeightSel) === 'custom') {
-                    // set select to custom + show custom input + copy value
-                    $wSel.val('custom').trigger('change').trigger('input');
-                    $wCustom.removeClass('hidden').val(baseWeightCustom).trigger('input');
-                } else {
-                    // normal option weight
-                    $wSel.val(baseWeightSel).trigger('change').trigger('input');
-                    $wCustom.addClass('hidden').val('');
+                if ($wSel.length) {
+                    if (String(baseWeightSel) === 'custom') {
+                        $wSel.val('custom').trigger('change').trigger('input');
+                        $wCustom.removeClass('hidden').val(baseWeightCustom).trigger('input');
+                    } else {
+                        $wSel.val(baseWeightSel).trigger('change').trigger('input');
+                        $wCustom.addClass('hidden').val('');
+                    }
                 }
+
+                // (so coin switches certificate -> pcs correctly)
+                toggleCoinFields($tr);
             });
         });
 

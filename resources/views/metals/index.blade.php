@@ -631,7 +631,7 @@
 
                         @empty
                         <tr data-empty="1">
-                            <td colspan="7" class="p-6 text-center text-slate-500">No entries yet.</td>
+                            <td colspan="8" class="p-6 text-center text-slate-500">No entries yet.</td>
                         </tr>
                         @endforelse
                     </tbody>
