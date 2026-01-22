@@ -23,3 +23,13 @@ Route::get('/metals/{metalEntry}/attachments/download', [MetalEntryController::c
 
 Route::get('/metals/{metalEntry}/attachments/download-all', [MetalEntryController::class, 'attachmentsDownloadAll'])
   ->name('metals.attachments.downloadAll');
+
+Route::get('/metals/{metalEntry}/items/{idx}/sell-attachments', [MetalEntryController::class, 'sellAttachmentsIndex']);
+Route::post('/metals/{metalEntry}/items/{idx}/sell-attachments', [MetalEntryController::class, 'sellAttachmentsStore']);
+Route::delete('/metals/{metalEntry}/items/{idx}/sell-attachments', [MetalEntryController::class, 'sellAttachmentsDestroy']);
+Route::get('/metals/{metalEntry}/items/{idx}/sell-attachments/download', [MetalEntryController::class, 'sellAttachmentsDownload']);
+Route::get('/metals/{metalEntry}/items/{idx}/sell-attachments/download-all', [MetalEntryController::class, 'sellAttachmentsDownloadAll']);
+
+Route::post('/metals/{metalEntry}/items/{idx}/image', [MetalEntryController::class, 'itemImageStore']);
+Route::delete('/metals/{metalEntry}/items/{idx}/image', [MetalEntryController::class, 'itemImageDestroy']);
+Route::get('/metals/{metalEntry}/items/{idx}/image', [MetalEntryController::class, 'itemImagePreview'])->name('metals.items.image.preview');

@@ -118,8 +118,23 @@
                 <!-- Shape selector (Bar / Coin / Granules / etc) -->
                 <div id="pmShapeTabs" class="mb-3"></div>
 
-                <!-- Inventory cards -->
-                <div id="invSummary" class="space-y-3"></div>
+                <div id="invWeightBar" class="mb-3"></div>
+
+                <div id="invSummary" class="pmInvWrap">
+                    <!-- LEFT EDGE TAB (shows only in SOLD view) -->
+                    <button type="button" class="pmInvEdge pmInvEdge--left" data-inv-edge="stock" aria-label="Open Stock Summary">
+                        <span class="pmInvEdgeText">STOCK SUMMARY</span>
+                    </button>
+
+                    <!-- RIGHT EDGE TAB (shows only in STOCK view) -->
+                    <button type="button" class="pmInvEdge pmInvEdge--right" data-inv-edge="sold" aria-label="Open Sold Summary">
+                        <span class="pmInvEdgeText">SOLD SUMMARY</span>
+                    </button>
+
+                    <!-- PANES -->
+                    <div id="invSummaryStock" class="pmInvPane is-active"></div>
+                    <div id="invSummarySold" class="pmInvPane"></div>
+                </div>
             </div>
         </div>
 
@@ -164,6 +179,10 @@
                         <input type="text" class="pm-row-total text-center" value="AED 0.00" disabled readonly>
                     </td>
 
+                    <td class="px-2 py-2 text-center w-[72px]">
+                        <span class="pm-sold-badge is-zero" data-sold-count>0</span>
+                    </td>
+
                     <td class="px-3 py-2 w-[190px]">
                         <div class="pm-actions flex items-center justify-end gap-2 whitespace-nowrap">
                             <!-- Submit -->
@@ -189,71 +208,72 @@
                     data-new="1"
                     data-detail-for="__TMP__">
 
-                    <td colspan="8" class="p-4 bg-slate-50">
-                        <div class="pm-detail-anim space-y-4">
+                    <td colspan="9" class="p-0 bg-slate-50">
+                        <div class="pm-detail-anim">
+                            <div class="pm-detail-inner p-4 space-y-4">
 
-                            <!-- SHARED FIELDS (NEW LAYOUT) -->
-                            <div class="rounded-2xl bg-slate-100/70 p-5 ring-1 ring-black/5">
-                                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                <!-- SHARED FIELDS (NEW LAYOUT) -->
+                                <div class="rounded-2xl bg-slate-100/70 p-5 ring-1 ring-black/5">
+                                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-                                    <!-- LEFT: Description + Remarks -->
-                                    <div class="lg:col-span-8 space-y-4">
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-600 mb-1">Description</div>
-                                            <textarea name="description" rows="2" class="gts-input gts-editable min-h-[54px]" disabled></textarea>
+                                        <!-- LEFT: Description + Remarks -->
+                                        <div class="lg:col-span-8 space-y-4">
+                                            <div>
+                                                <div class="text-xs font-semibold text-slate-600 mb-1">Description</div>
+                                                <textarea name="description" rows="2" class="gts-input gts-editable min-h-[54px]" disabled></textarea>
+                                            </div>
+
+                                            <div>
+                                                <div class="text-xs font-semibold text-slate-600 mb-1">Remarks</div>
+                                                <textarea name="remarks" rows="2" class="gts-input gts-editable min-h-[54px]" disabled></textarea>
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-600 mb-1">Remarks</div>
-                                            <textarea name="remarks" rows="2" class="gts-input gts-editable min-h-[54px]" disabled></textarea>
+                                        <!-- RIGHT: Mode + Receipt (same width) -->
+                                        <div class="lg:col-span-4 space-y-4">
+                                            <div>
+                                                <div class="text-xs font-semibold text-slate-600 mb-1">Mode of Transaction</div>
+                                                <select name="mode_of_transaction" class="gts-select gts-editable w-full" disabled>
+                                                    <option value="">Select</option>
+                                                    <option value="cash">Cash</option>
+                                                    <option value="bank" selected>Bank</option>
+                                                    <option value="cheque">Cheque</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="pt-3.5">
+                                                <div class="text-xs font-semibold text-slate-600 mb-1">Receipt No</div>
+                                                <input name="receipt_no" rows="2" class="gts-input gts-editable min-h-[54px] w-full" disabled>
+                                            </div>
                                         </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- ITEMS (REPEATED BY QTY) -->
+                                <div class="rounded-2xl border border-slate-200 bg-slate-50 shadow-sm overflow-hidden">
+                                    <div class="px-4 py-3 flex items-center justify-between border-b border-slate-200">
+                                        <div>
+                                            <div class="font-semibold text-slate-800">Items</div>
+                                            <div class="text-xs text-slate-500">Rows will follow Qty</div>
+                                        </div>
+
+                                        <button type="button"
+                                            class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700"
+                                            data-action="copy-item-1-all" data-no-toggle="1">
+                                            Copy Item 1 → all
+                                        </button>
                                     </div>
 
-                                    <!-- RIGHT: Mode + Receipt (same width) -->
-                                    <div class="lg:col-span-4 space-y-4">
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-600 mb-1">Mode of Transaction</div>
-                                            <select name="mode_of_transaction" class="gts-select gts-editable w-full" disabled>
-                                                <option value="">Select</option>
-                                                <option value="cash">Cash</option>
-                                                <option value="bank">Bank</option>
-                                                <option value="cheque">Cheque</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-600 mb-1">Receipt No</div>
-                                            <input name="receipt_no" class="gts-input gts-editable w-full" disabled>
-                                        </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-sm">
+                                            <tbody data-items-tbody>
+                                                <!-- JS injects rows -->
+                                            </tbody>
+                                        </table>
                                     </div>
-
                                 </div>
                             </div>
-
-                            <!-- ITEMS (REPEATED BY QTY) -->
-                            <div class="rounded-2xl border border-slate-200 bg-slate-900 shadow-sm overflow-hidden">
-                                <div class="px-4 py-3 flex items-center justify-between border-b border-slate-200">
-                                    <div>
-                                        <div class="font-semibold text-white">Items</div>
-                                        <div class="text-xs text-slate-300">Rows will follow Qty</div>
-                                    </div>
-
-                                    <button type="button"
-                                        class="px-3 py-1.5 rounded-xl pm-copy-btn-dark text-xs font-semibold"
-                                        data-action="copy-item-1-all" data-no-toggle="1">
-                                        Copy Item 1 → all
-                                    </button>
-                                </div>
-
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-sm">
-                                        <tbody data-items-tbody>
-                                            <!-- JS injects rows -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
                         </div>
                     </td>
                 </tr>
@@ -369,14 +389,13 @@
                         </div>
                     </div>
 
-                    <!-- FILTER: Mode (custom) -->
-                    <div class="relative" data-dd="mode">
+                    <!-- FILTER: Sold (custom) -->
+                    <div class="relative" data-dd="sold">
                         <!-- Hidden real select -->
-                        <select id="filterMode" class="hidden">
-                            <option value="">All Modes</option>
-                            <option value="cash">Cash</option>
-                            <option value="bank">Bank</option>
-                            <option value="cheque">Cheque</option>
+                        <select id="filterSold" class="hidden">
+                            <option value="">All</option>
+                            <option value="sold">Sold only</option>
+                            <option value="not_sold">Not sold</option>
                         </select>
 
                         <!-- Button -->
@@ -385,7 +404,7 @@
                                     border border-slate-200 bg-white shadow-sm ring-1 ring-black/5
                                     hover:border-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-300
                                     transition relative">
-                            <span class="dd-label text-sm font-medium text-slate-800">All Modes</span>
+                            <span class="dd-label text-sm font-medium text-slate-800">All</span>
                             <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" clip-rule="evenodd" />
@@ -396,18 +415,9 @@
                         <!-- Options panel -->
                         <div class="dd-panel hidden absolute z-50 mt-2 w-full rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/10 overflow-hidden">
                             <div class="p-2">
-                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="">
-                                    All Modes
-                                </div>
-                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="cash">
-                                    Cash
-                                </div>
-                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="bank">
-                                    Bank
-                                </div>
-                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="cheque">
-                                    Cheque
-                                </div>
+                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="">All</div>
+                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="sold">Sold only</div>
+                                <div class="dd-opt px-3 py-2 rounded-xl text-sm hover:bg-slate-50 cursor-pointer" data-value="not_sold">Not sold</div>
                             </div>
                         </div>
                     </div>
@@ -424,16 +434,17 @@
         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div class="pm-table-scroll w-full">
                 <table class="w-full text-sm table-fixed min-w-full md:min-w-[980px] lg:min-w-full">
-                    <thead class="pm-sticky-head bg-white/80 backdrop-blur border-b border-slate-700 shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
-                        <tr class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white">
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-16">S.no</th>
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-40">Date of purchase</th>
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-44">Invoice #</th>
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-52">Supplier</th>
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-24">Qty</th>
-                            <th class="px-3 py-2 text-left font-semibold text-white/90 w-52">Beneficiary</th>
-                            <th class="px-3 py-2 text-right font-semibold text-white/90 w-[140px]">Total Purchase</th>
-                            <th class="px-3 py-2 text-right font-semibold text-white/90 w-[160px]">Actions</th>
+                    <thead class="pm-sticky-head bg-[#eef4ff] border-b border-slate-200">
+                        <tr class="bg-[#eef4ff] text-slate-700">
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-16">S.no</th>
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-36">Date of purchase</th>
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-40">Invoice #</th>
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-44">Supplier</th>
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-20">Qty</th>
+                            <th class="px-3 py-2 text-left font-semibold text-slate-700 w-44">Beneficiary</th>
+                            <th class="px-3 py-2 text-right font-semibold text-slate-700 w-[130px]">Total Purchase</th>
+                            <th class="px-2 py-2 text-center font-semibold text-slate-700 w-[72px]">Sold</th>
+                            <th class="px-3 py-2 text-right font-semibold text-slate-700 w-[140px]">Actions</th>
                         </tr>
                     </thead>
 
@@ -482,7 +493,7 @@
                                     disabled>
                             </td>
 
-                            <td class="px-3 py-2">
+                            <td class="px-3 py-2 whitespace-normal break-words max-w-[220px]">
                                 <input name="supplier_name" type="text"
                                     value="{{ $e->supplier_name }}"
                                     class="gts-input gts-editable" disabled>
@@ -494,7 +505,7 @@
                                     class="gts-input gts-editable text-center font-medium" disabled>
                             </td>
 
-                            <td class="px-3 py-2">
+                            <td class="px-3 py-2 whitespace-normal break-words max-w-[220px]">
                                 <input name="beneficiary_name" type="text"
                                     value="{{ $e->beneficiary_name }}"
                                     class="gts-input gts-editable" disabled>
@@ -502,6 +513,10 @@
 
                             <td class="px-3 py-2 w-[160px]">
                                 <input type="text" class="pm-row-total text-center" value="AED 0.00" disabled readonly>
+                            </td>
+
+                            <td class="px-2 py-2 text-center w-[72px]">
+                                <span class="pm-sold-badge is-zero" data-sold-count>0</span>
                             </td>
 
                             <td class="px-3 py-2 w-[190px]">
@@ -559,79 +574,81 @@
 
                         {{-- DETAIL ROW (hidden by default) --}}
                         <tr class="pm-detail hidden bg-slate-50/40" data-detail-for="{{ $e->id }}" data-items='@json($e->items ?? [])'>
-                            <td colspan="8" class="p-4 bg-slate-50">
-                                <div class="space-y-4">
+                            <td colspan="9" class="p-0 bg-slate-50">
+                                <div class="pm-detail-anim">
+                                    <div class="pm-detail-inner p-4 space-y-4">
 
-                                    <!-- SHARED FIELDS (NEW LAYOUT) -->
-                                    <div class="rounded-2xl bg-slate-100/70 p-5 ring-1 ring-black/5">
-                                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                        <!-- SHARED FIELDS (NEW LAYOUT) -->
+                                        <div class="rounded-2xl bg-slate-100/70 p-5 ring-1 ring-black/5">
+                                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-                                            <!-- LEFT (wide): Description + Remarks -->
-                                            <div class="lg:col-span-8 space-y-4">
-                                                <div>
-                                                    <div class="text-xs font-semibold text-slate-600 mb-1">Description</div>
-                                                    <textarea name="description" rows="2"
-                                                        class="gts-input gts-editable min-h-[54px]" disabled>{{ $e->description }}</textarea>
+                                                <!-- LEFT (wide): Description + Remarks -->
+                                                <div class="lg:col-span-8 space-y-4">
+                                                    <div>
+                                                        <div class="text-xs font-semibold text-slate-600 mb-1">Description</div>
+                                                        <textarea name="description" rows="2"
+                                                            class="gts-input gts-editable min-h-[54px]" disabled>{{ $e->description }}</textarea>
+                                                    </div>
+
+                                                    <div>
+                                                        <div class="text-xs font-semibold text-slate-600 mb-1">Remarks</div>
+                                                        <textarea name="remarks" rows="2"
+                                                            class="gts-input gts-editable min-h-[54px]" disabled>{{ $e->remarks }}</textarea>
+                                                    </div>
                                                 </div>
 
-                                                <div>
-                                                    <div class="text-xs font-semibold text-slate-600 mb-1">Remarks</div>
-                                                    <textarea name="remarks" rows="2"
-                                                        class="gts-input gts-editable min-h-[54px]" disabled>{{ $e->remarks }}</textarea>
+                                                <!-- RIGHT (narrow): Mode + Receipt -->
+                                                <div class="lg:col-span-4 space-y-4">
+                                                    <div>
+                                                        <div class="text-xs font-semibold text-slate-600 mb-1">Mode of Transaction</div>
+                                                        <select name="mode_of_transaction" class="gts-select gts-editable w-full" disabled>
+                                                            <option value="">Select</option>
+                                                            <option value="cash" @selected(($e->mode_of_transaction ?? 'bank') === 'cash')>Cash</option>
+                                                            <option value="bank" @selected(($e->mode_of_transaction ?? 'bank') === 'bank')>Bank</option>
+                                                            <option value="cheque" @selected(($e->mode_of_transaction ?? 'bank') === 'cheque')>Cheque</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="pt-3.5">
+                                                        <div class="text-xs font-semibold text-slate-600 mb-1">Receipt No</div>
+                                                        <input name="receipt_no" rows="2" class="gts-input gts-editable min-h-[54px] w-full"
+                                                            value="{{ $e->receipt_no }}" disabled>
+                                                    </div>
                                                 </div>
+
                                             </div>
-
-                                            <!-- RIGHT (narrow): Mode + Receipt -->
-                                            <div class="lg:col-span-4 space-y-4">
-                                                <div>
-                                                    <div class="text-xs font-semibold text-slate-600 mb-1">Mode of Transaction</div>
-                                                    <select name="mode_of_transaction" class="gts-select gts-editable w-full" disabled>
-                                                        <option value="">Select</option>
-                                                        <option value="cash" @selected($e->mode_of_transaction === 'cash')>Cash</option>
-                                                        <option value="bank" @selected($e->mode_of_transaction === 'bank')>Bank</option>
-                                                        <option value="cheque" @selected($e->mode_of_transaction === 'cheque')>Cheque</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <div class="text-xs font-semibold text-slate-600 mb-1">Receipt No</div>
-                                                    <input name="receipt_no" class="gts-input gts-editable w-full"
-                                                        value="{{ $e->receipt_no }}" disabled>
-                                                </div>
-                                            </div>
-
                                         </div>
+
+                                        <!-- ITEMS (REPEATED BY QTY) -->
+                                        <div class="rounded-2xl border border-slate-200 bg-[#f3f7ff] shadow-sm overflow-hidden">
+                                            <div class="px-4 py-3 flex items-center justify-between border-b border-slate-200 bg-[#eef4ff]">
+                                                <div>
+                                                    <div class="font-semibold text-slate-800">Items</div>
+                                                    <div class="text-xs text-slate-500">Rows will follow Qty</div>
+                                                </div>
+
+                                                <button type="button"
+                                                    class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-sm"
+                                                    data-action="copy-item-1-all" data-no-toggle="1">
+                                                    Copy Item 1 → all
+                                                </button>
+                                            </div>
+
+                                            <div class="overflow-x-auto">
+                                                <table class="w-full text-sm">
+                                                    <tbody data-items-tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
                                     </div>
-
-                                    <!-- ITEMS (REPEATED BY QTY) -->
-                                    <div class="rounded-2xl border border-slate-200 bg-slate-900 shadow-sm overflow-hidden">
-                                        <div class="px-4 py-3 flex items-center justify-between border-b border-slate-200">
-                                            <div>
-                                                <div class="font-semibold text-white">Items</div>
-                                                <div class="text-xs text-slate-300">Rows will follow Qty</div>
-                                            </div>
-
-                                            <button type="button"
-                                                class="px-3 py-1.5 rounded-xl border border-white/15 bg-white/10 hover:bg-white/15 text-xs font-semibold text-white"
-                                                data-action="copy-item-1-all" data-no-toggle="1">
-                                                Copy Item 1 → all
-                                            </button>
-                                        </div>
-
-                                        <div class="overflow-x-auto">
-                                            <table class="w-full text-sm">
-                                                <tbody data-items-tbody></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </td>
                         </tr>
 
                         @empty
                         <tr data-empty="1">
-                            <td colspan="8" class="p-6 text-center text-slate-500">No entries yet.</td>
+                            <td colspan="9" class="p-6 text-center text-slate-500">No entries yet.</td>
                         </tr>
                         @endforelse
                     </tbody>

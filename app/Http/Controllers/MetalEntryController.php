@@ -59,7 +59,7 @@ class MetalEntryController extends Controller
 
         $items = is_array($items) ? array_values($items) : [];
         $items = array_slice($items, 0, (int) $data['qty']);
-        
+
         while (count($items) < (int) $data['qty']) {
             $items[] = [];
         }
@@ -278,5 +278,113 @@ class MetalEntryController extends Controller
         $zip->close();
 
         return response()->download($tmpZip, $zipName)->deleteFileAfterSend(true);
+    }
+
+    public function sellAttachmentsIndex(MetalEntry $metalEntry, int $idx)
+    {
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $list = $items[$idx]['sell_attachments'] ?? [];
+
+        $files = collect($list)->map(function ($path) {
+            return [
+                'name' => basename($path),
+                'path' => $path,
+                'url' => Storage::url($path),
+                'type' => strtolower(pathinfo($path, PATHINFO_EXTENSION)),
+            ];
+        })->values();
+
+        return response()->json(['files' => $files]);
+    }
+
+    public function sellAttachmentsStore(Request $request, MetalEntry $metalEntry, int $idx)
+    {
+        $request->validate([
+            'attachments.*' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $items[$idx] = $items[$idx] ?? [];
+        $items[$idx]['sell_attachments'] = $items[$idx]['sell_attachments'] ?? [];
+
+        foreach (($request->file('attachments') ?? []) as $f) {
+            $name = Str::uuid()->toString() . '.' . $f->getClientOriginalExtension();
+            $path = $f->storeAs("metals/sell/{$metalEntry->id}/item_{$idx}", $name, 'public');
+            $items[$idx]['sell_attachments'][] = $path;
+        }
+
+        $metalEntry->update(['items' => array_values($items)]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function sellAttachmentsDestroy(Request $request, MetalEntry $metalEntry, int $idx)
+    {
+        $request->validate(['path' => ['required', 'string']]);
+        $path = $request->input('path');
+
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $list = $items[$idx]['sell_attachments'] ?? [];
+
+        $items[$idx]['sell_attachments'] = array_values(array_filter($list, fn($p) => $p !== $path));
+        Storage::disk('public')->delete($path);
+
+        $metalEntry->update(['items' => array_values($items)]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function itemImageStore(Request $request, MetalEntry $metalEntry, int $idx)
+    {
+        $request->validate([
+            'image' => ['required', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $items[$idx] = $items[$idx] ?? [];
+
+        // delete old if exists
+        if (!empty($items[$idx]['image_path'])) {
+            Storage::disk('public')->delete($items[$idx]['image_path']);
+        }
+
+        $file = $request->file('image');
+        $name = \Illuminate\Support\Str::uuid()->toString() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs("metals/item-images/{$metalEntry->id}/item_{$idx}", $name, 'public');
+
+        $items[$idx]['image_path'] = $path;
+        $metalEntry->update(['items' => array_values($items)]);
+
+        // LIVE-safe preview URL (no storage symlink dependency)
+        $url = route('metals.items.image.preview', [$metalEntry->id, $idx]) . '?v=' . time();
+
+        return response()->json(['ok' => true, 'path' => $path, 'url' => $url]);
+    }
+
+    public function itemImageDestroy(MetalEntry $metalEntry, int $idx)
+    {
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $items[$idx] = $items[$idx] ?? [];
+
+        if (!empty($items[$idx]['image_path'])) {
+            Storage::disk('public')->delete($items[$idx]['image_path']);
+            $items[$idx]['image_path'] = null;
+            $metalEntry->update(['items' => array_values($items)]);
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function itemImagePreview(MetalEntry $metalEntry, int $idx)
+    {
+        $items = is_array($metalEntry->items) ? $metalEntry->items : (json_decode($metalEntry->items ?? '[]', true) ?: []);
+        $path = $items[$idx]['image_path'] ?? null;
+
+        if (!$path) abort(404);
+
+        $abs = storage_path('app/public/' . $path);
+        if (!file_exists($abs)) abort(404);
+
+        return response()->file($abs, [
+            'Content-Disposition' => 'inline; filename="' . basename($abs) . '"'
+        ]);
     }
 }

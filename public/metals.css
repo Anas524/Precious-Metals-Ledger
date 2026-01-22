@@ -391,29 +391,30 @@ body.pm-modal-open {
 }
 
 /* Preview box must scroll when zoomed */
-#attPreviewBox{
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+#attPreviewBox {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* wrapper is what we resize */
-#attPreviewImgWrap{
-  position: relative;
-  margin: 0 auto;      /* centers horizontally when smaller */
+#attPreviewImgWrap {
+    position: relative;
+    margin: 0 auto;
+    /* centers horizontally when smaller */
 }
 
 /* image fills wrapper */
-#attPreviewImg{
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  cursor: grab;
+#attPreviewImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    cursor: grab;
 }
 
-#attPreviewImg.is-panning{
-  cursor: grabbing;
+#attPreviewImg.is-panning {
+    cursor: grabbing;
 }
 
 .dd2-btn::after {
@@ -558,9 +559,10 @@ body.pm-modal-open {
 
 .pm-inv-head {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 16px 16px 10px 16px;
+    gap: 14px;
+    padding: 16px;
 }
 
 .pm-inv-title {
@@ -572,9 +574,53 @@ body.pm-modal-open {
     font-size: 18px;
 }
 
+.pm-inv-title-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.pm-inv-subline {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.pm-inv-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
 .pm-inv-count {
-    font-weight: 800;
-    color: #475569;
+    font-weight: 900;
+    color: #334155;
+}
+
+/* weight pill becomes a small card */
+.pm-inv-weight {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, .08);
+    padding: 10px 12px;
+    border-radius: 16px;
+    box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+    min-width: 220px;
+}
+
+.pmWBig {
+    font-weight: 950;
+    font-size: 18px;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.pmWSmall {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
 }
 
 .pm-inv-grid {
@@ -915,28 +961,86 @@ body.pm-modal-open {
 }
 
 /* Bars: stronger angle + more depth */
-.pm-metal-img.pm-img--bar.v1  { transform: rotate(-20deg) translate(-2px, 4px) scale(1.07); }
-.pm-metal-img.pm-img--bar.v2  { transform: rotate(-14deg) translate( 1px, 2px) scale(1.05); }
-.pm-metal-img.pm-img--bar.v3  { transform: rotate(-9deg)  translate(-1px, 3px) scale(1.06); }
-.pm-metal-img.pm-img--bar.v4  { transform: rotate(-4deg)  translate( 2px, 2px) scale(1.04); }
-.pm-metal-img.pm-img--bar.v5  { transform: rotate( 4deg)  translate(-1px, 1px) scale(1.05); }
-.pm-metal-img.pm-img--bar.v6  { transform: rotate( 9deg)  translate( 1px, 3px) scale(1.06); }
-.pm-metal-img.pm-img--bar.v7  { transform: rotate( 14deg) translate(-2px, 2px) scale(1.05); }
-.pm-metal-img.pm-img--bar.v8  { transform: rotate( 20deg) translate( 1px, 4px) scale(1.07); }
-.pm-metal-img.pm-img--bar.v9  { transform: rotate(-24deg) translate( 2px, 2px) scale(1.04); }
-.pm-metal-img.pm-img--bar.v10 { transform: rotate( 24deg) translate(-1px, 2px) scale(1.04); }
+.pm-metal-img.pm-img--bar.v1 {
+    transform: rotate(-20deg) translate(-2px, 4px) scale(1.07);
+}
+
+.pm-metal-img.pm-img--bar.v2 {
+    transform: rotate(-14deg) translate(1px, 2px) scale(1.05);
+}
+
+.pm-metal-img.pm-img--bar.v3 {
+    transform: rotate(-9deg) translate(-1px, 3px) scale(1.06);
+}
+
+.pm-metal-img.pm-img--bar.v4 {
+    transform: rotate(-4deg) translate(2px, 2px) scale(1.04);
+}
+
+.pm-metal-img.pm-img--bar.v5 {
+    transform: rotate(4deg) translate(-1px, 1px) scale(1.05);
+}
+
+.pm-metal-img.pm-img--bar.v6 {
+    transform: rotate(9deg) translate(1px, 3px) scale(1.06);
+}
+
+.pm-metal-img.pm-img--bar.v7 {
+    transform: rotate(14deg) translate(-2px, 2px) scale(1.05);
+}
+
+.pm-metal-img.pm-img--bar.v8 {
+    transform: rotate(20deg) translate(1px, 4px) scale(1.07);
+}
+
+.pm-metal-img.pm-img--bar.v9 {
+    transform: rotate(-24deg) translate(2px, 2px) scale(1.04);
+}
+
+.pm-metal-img.pm-img--bar.v10 {
+    transform: rotate(24deg) translate(-1px, 2px) scale(1.04);
+}
 
 /* Coins: smaller angle (keep premium look) */
-.pm-metal-img.pm-img--coin.v1  { transform: rotate(-10deg) translate(0px, 1px) scale(1.03); }
-.pm-metal-img.pm-img--coin.v2  { transform: rotate(-6deg)  translate(1px, 0px) scale(1.02); }
-.pm-metal-img.pm-img--coin.v3  { transform: rotate(-3deg)  translate(0px, 1px) scale(1.02); }
-.pm-metal-img.pm-img--coin.v4  { transform: rotate(-1deg)  translate(1px, 1px) scale(1.01); }
-.pm-metal-img.pm-img--coin.v5  { transform: rotate( 2deg)  translate(0px, 0px) scale(1.02); }
-.pm-metal-img.pm-img--coin.v6  { transform: rotate( 4deg)  translate(-1px, 1px) scale(1.02); }
-.pm-metal-img.pm-img--coin.v7  { transform: rotate( 6deg)  translate(0px, 1px) scale(1.02); }
-.pm-metal-img.pm-img--coin.v8  { transform: rotate( 10deg) translate(-1px, 0px) scale(1.03); }
-.pm-metal-img.pm-img--coin.v9  { transform: rotate(-12deg) translate(1px, 1px) scale(1.01); }
-.pm-metal-img.pm-img--coin.v10 { transform: rotate( 12deg) translate(0px, 1px) scale(1.01); }
+.pm-metal-img.pm-img--coin.v1 {
+    transform: rotate(-10deg) translate(0px, 1px) scale(1.03);
+}
+
+.pm-metal-img.pm-img--coin.v2 {
+    transform: rotate(-6deg) translate(1px, 0px) scale(1.02);
+}
+
+.pm-metal-img.pm-img--coin.v3 {
+    transform: rotate(-3deg) translate(0px, 1px) scale(1.02);
+}
+
+.pm-metal-img.pm-img--coin.v4 {
+    transform: rotate(-1deg) translate(1px, 1px) scale(1.01);
+}
+
+.pm-metal-img.pm-img--coin.v5 {
+    transform: rotate(2deg) translate(0px, 0px) scale(1.02);
+}
+
+.pm-metal-img.pm-img--coin.v6 {
+    transform: rotate(4deg) translate(-1px, 1px) scale(1.02);
+}
+
+.pm-metal-img.pm-img--coin.v7 {
+    transform: rotate(6deg) translate(0px, 1px) scale(1.02);
+}
+
+.pm-metal-img.pm-img--coin.v8 {
+    transform: rotate(10deg) translate(-1px, 0px) scale(1.03);
+}
+
+.pm-metal-img.pm-img--coin.v9 {
+    transform: rotate(-12deg) translate(1px, 1px) scale(1.01);
+}
+
+.pm-metal-img.pm-img--coin.v10 {
+    transform: rotate(12deg) translate(0px, 1px) scale(1.01);
+}
 
 .pm-tile-ico {
     font-size: 42px;
@@ -1200,13 +1304,15 @@ tr.pm-detail.hidden {
     display: none;
 }
 
+tr.pm-detail > td { padding: 0 !important; }
+
 /* the animated wrapper inside td */
 .pm-detail-anim {
     overflow: hidden;
-    max-height: 0;
+    max-height: var(--pm-detail-max, 0px);
     opacity: 0;
     transform: translateY(-4px);
-    transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    transition: max-height .28s ease;
 }
 
 /* when open, max-height is driven by CSS variable set from JS */
@@ -1273,137 +1379,1023 @@ tr.pm-header.view-mode .pm-row-total {
     cursor: pointer !important;
 }
 
-/* ===== Items dark section refinements ===== */
-.pm-items-dark { background: #0b1220; } /* deep navy */
-.pm-items-surface { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.10); }
-.pm-items-label { color: rgba(255,255,255,.78); font-weight: 800; font-size: 12px; letter-spacing: .2px; }
-.pm-items-badge { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.14); color: #fff; }
+/* items wrapper (outer card) */
+.pm-items-dark {
+    background: #eaf2ff;
+    /* flat (no gradient) */
+    border: 1px solid #d7e6ff;
+    border-radius: 16px;
+}
+
+/* inner surfaces */
+.pm-items-surface {
+    background: #f8fbff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+}
+
+/* item labels */
+.pm-items-label {
+    color: #475569;
+    /* slate-600/700 */
+    font-weight: 600;
+}
+
+/* Badge placement like old design (top-left inset) */
+.pm-item-badge-wrap {
+    padding: 14px 0 8px 14px;
+    /* top/left spacing */
+}
+
+.pm-items-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    background: #acccf6;
+    color: whitesmoke;
+}
+
+/* keep badge area away from border */
+.pm-items-dark .pt-3.pl-3 {
+    padding-top: 14px;
+    padding-left: 14px;
+}
 
 .pm-copy-btn-dark {
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.16);
-  color: #fff;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .16);
+    color: #fff;
 }
-.pm-copy-btn-dark:hover { background: rgba(255,255,255,.18); }
+
+.pm-copy-btn-dark:hover {
+    background: rgba(255, 255, 255, .18);
+}
 
 /* flash highlight */
 .pmTileFlash {
-  animation: pmTileFlash 1.2s ease both;
+    animation: pmTileFlash 2s ease .15s both;
 }
 
-@keyframes pmTileFlash {
-  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,.0); }
-  30%  { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(34,197,94,.25); }
-  60%  { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(34,197,94,.18); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,.0); }
-}
-
-/* ghost tile (sold preview) */
-.pmTileGhost {
-  animation: pmTileGhost 1.6s ease both;
-  pointer-events: none;
-}
-
-@keyframes pmTileGhost {
-  0%   { opacity: 0; transform: translateY(10px) scale(.98); }
-  20%  { opacity: 1; transform: translateY(0) scale(1); }
-  70%  { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-6px) scale(.98); }
-}
-
-/* Sold / disappearing tile accent */
-.pm-accent-sold{
-  --pmTileBg: linear-gradient(135deg, rgba(244,63,94,.35), rgba(244,63,94,.12));
-  --pmTileText: #9f1239; /* rose-800 */
-}
-
-.pm-accent-sold .pmTilePill--radial{
-  background: linear-gradient(90deg,
-    rgba(244,63,94,.10) 0%,
-    rgba(244,63,94,.22) 18%,
-    rgba(244,63,94,.34) 50%,
-    rgba(244,63,94,.22) 82%,
-    rgba(244,63,94,.10) 100%
-  );
+@keyframes pmTileFlash{
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(99,102,241,.0); }
+  35%  { transform: scale(1.02); box-shadow: 0 0 0 6px rgba(99,102,241,.22); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99,102,241,0); }
 }
 
 /* The scroll container for the table */
-.pm-table-scroll{
-  max-height: 670px;
-  overflow-y: auto;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+.pm-table-scroll {
+    max-height: 670px;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Sticky header works only inside the scrolling parent */
-.pm-sticky-head{
-  position: sticky;
-  top: 0;
-  z-index: 20;
+.pm-sticky-head {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.pm-sticky-head,
+.pm-sticky-head tr,
+.pm-sticky-head th {
+    background: #eef4ff !important;
+    color: #334155 !important;
 }
 
 /* Filter dropdown panel when portaled to body */
-.dd-panel.dd-panel--ported{
-  position: fixed !important;
-  z-index: 9999999 !important;
-}
-
-/* keep your gradient look */
-.pm-sticky-head tr{
-  background: linear-gradient(to right, #0f172a, #1e293b, #0f172a);
+.dd-panel.dd-panel--ported {
+    position: fixed !important;
+    z-index: 9999999 !important;
 }
 
 /* Make PCS input match select height */
-.pm-pcs-input{
-  height: 44px;          /* same as h-11 */
-  padding-top: .5rem;
-  padding-bottom: .5rem; /* match gts-select vertical padding */
+.pm-pcs-input {
+    height: 44px;
+    /* same as h-11 */
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    /* match gts-select vertical padding */
 }
 
-.pm-money-row{
+.pm-money-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.pm-cur-toggle {
+    display: inline-flex;
+    border: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .08);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.pm-cur {
+    position: relative;
+}
+
+.pm-cur input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pm-cur span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    /* matches .pm-btn height */
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, .85);
+    cursor: pointer;
+    user-select: none;
+}
+
+.pm-cur input:checked+span {
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+}
+
+.pm-cur span:hover {
+    background: rgba(255, 255, 255, .12);
+}
+
+/* ===== Weight bar modern (single box) ===== */
+.pmWBar2 {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, .10);
+    border-radius: 22px;
+    box-shadow: 0 14px 34px rgba(2, 6, 23, .07);
+    padding: 16px;
+}
+
+.pmWBar2Top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+}
+
+.pmWBar2Title {
+    font-weight: 950;
+    color: #0f172a;
+    font-size: 15px;
+}
+
+.pmWBar2Sub {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.pmWBar2Grid {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+@media (max-width: 900px) {
+    .pmWBar2Grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .pmWBar2Grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+.pmWCard {
+    border-radius: 16px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, .06);
+}
+
+.pmWCardLabel {
+    font-size: 11px;
+    font-weight: 900;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.pmWCardVal {
+    margin-top: 3px;
+    font-size: 13px;
+    font-weight: 950;
+    color: #0f172a;
+}
+
+/* subtle accents */
+.pmWCard--gold {
+    border-color: rgba(245, 158, 11, .25);
+}
+
+.pmWCard--silver {
+    border-color: rgba(148, 163, 184, .35);
+}
+
+.pmWCard--platinum {
+    border-color: rgba(167, 139, 250, .35);
+}
+
+.pmWCard--miscellaneous {
+    border-color: rgba(251, 146, 60, .30);
+}
+
+.pmWEmpty {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    padding-top: 8px;
+}
+
+.pm-preview {
+    position: relative;
+    grid-column: 1;
+    align-self: stretch;
+    min-height: 240px;
+    margin-bottom: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, .10), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, .10), transparent 55%),
+        #ffffff;
+    box-shadow: 0 14px 34px rgba(2, 6, 23, .08);
+    overflow: hidden;
+
+    /* animation base */
+    opacity: 0;
+    transform: translateY(8px) scale(.985);
+    transition:
+        opacity .25s ease,
+        transform .25s ease,
+        filter .25s ease,
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+    pointer-events: none;
+}
+
+/* when ready => animate in */
+.pm-preview.is-ready {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* when empty => keep space but looks muted */
+.pm-preview.is-empty {
+    opacity: .35;
+    transform: none;
+    filter: saturate(.7);
+}
+
+/* SOLD state = red shade (no badge text) */
+.pm-preview.is-sold {
+    border-color: rgba(244, 63, 94, .28);
+    background:
+        radial-gradient(circle at top left, rgba(244, 63, 94, .14), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(251, 113, 133, .12), transparent 55%),
+        #ffffff;
+    box-shadow: 0 18px 38px rgba(244, 63, 94, .10);
+}
+
+.pm-preview-img[src=""] {
+    display: none;
+}
+
+.pm-preview-imgwrap {
+    position: relative;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+}
+
+.pm-preview-img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 18px 25px rgba(0, 0, 0, .18));
+    transform: rotate(-10deg);
+    transition: filter .25s ease, transform .25s ease;
+}
+
+/* when user uploaded custom image: no rotate */
+.pm-preview.is-custom .pm-preview-img {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* sold image look: slightly grey + red glow */
+.pm-preview.is-sold .pm-preview-img {
+    filter:
+        grayscale(.25) saturate(.85) drop-shadow(0 18px 25px rgba(244, 63, 94, .18));
+}
+
+.pm-preview-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .88);
+    border: 1px solid rgba(15, 23, 42, .10);
+    font-weight: 950;
+    font-size: 12px;
+    color: #0f172a;
+    box-shadow: 0 10px 20px rgba(2, 6, 23, .08);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: transform .25s ease, opacity .25s ease, border-color .25s ease, color .25s ease, background .25s ease;
+}
+
+.pm-preview.is-ready .pm-preview-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* badge tint when sold (still shows only weight) */
+.pm-preview.is-sold .pm-preview-badge {
+    background: rgba(255, 241, 242, .92);
+    border-color: rgba(244, 63, 94, .22);
+    color: #9f1239;
+}
+
+.pm-preview-meta {
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(15, 23, 42, .06);
+}
+
+.pm-preview-title {
+    font-weight: 900;
+    color: #0f172a;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.pm-preview-sub {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+@media (max-width: 640px) {
+    .pm-preview-img {
+        transform: rotate(-6deg);
+        height: 140px;
+    }
+}
+
+.pm-sell-att-btn {
+    height: 40px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 12px;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background: #fff;
+    color: #0f172a;
+    box-shadow: 0 10px 20px rgba(2, 6, 23, .06);
+}
+
+.pm-sell-att-btn:hover {
+    background: #f8fafc;
+}
+
+.pm-sell-att-btn--upload {
+    border-color: rgba(14, 165, 233, .25);
+}
+
+.pm-sell-att-btn--view {
+    border-color: rgba(99, 102, 241, .25);
+}
+
+.pm-sell-att-btn[disabled] {
+    opacity: .45;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Mobile: table scroll should fit the screen height */
+@media (max-width: 640px) {
+    .pm-table-scroll {
+        max-height: calc(100vh - 120px);
+        /* adjust if needed */
+    }
+}
+
+/* Sell vs Purchase highlight */
+.pm-sell-good {
+    background: rgba(16, 185, 129, .12) !important;
+    /* green tint */
+    border-color: rgba(16, 185, 129, .45) !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, .18) !important;
+}
+
+.pm-sell-bad {
+    background: rgba(244, 63, 94, .12) !important;
+    /* red tint */
+    border-color: rgba(244, 63, 94, .45) !important;
+    box-shadow: 0 0 0 3px rgba(244, 63, 94, .18) !important;
+}
+
+.pm-preview-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.pm-preview-actions {
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.pm-preview-iconbtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(15, 23, 42, .10);
+    background: #fff;
+    color: #0f172a;
+    box-shadow: 0 10px 18px rgba(2, 6, 23, .06);
+    transition: .15s ease;
+}
+
+.pm-preview-iconbtn:hover {
+    background: #f8fafc;
+    transform: translateY(-1px);
+}
+
+.pm-preview-iconbtn--danger {
+    border-color: rgba(244, 63, 94, .25);
+    color: #e11d48;
+    background: rgba(244, 63, 94, .06);
+}
+
+.pm-preview-iconbtn--danger:hover {
+    background: rgba(244, 63, 94, .10);
+}
+
+.pm-preview.is-uploading {
+    opacity: .6;
+    filter: saturate(.8);
+}
+
+/* ---------- Preview hover zoom (only for uploaded images) ---------- */
+.pm-imgzoom {
+    position: fixed;
+    inset: 0;
+    z-index: 10000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+
+.pm-imgzoom.hidden {
+    display: none;
+}
+
+.pm-imgzoom-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, .55);
+    backdrop-filter: blur(6px);
+}
+
+.pm-imgzoom-img {
+    position: relative;
+    max-width: min(980px, 92vw);
+    max-height: min(820px, 88vh);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, .45);
+    padding: 10px;
+}
+
+.pm-imgzoom-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    background: rgba(15, 23, 42, .55);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.pm-imgzoom-close:hover {
+    background: rgba(15, 23, 42, .75);
+}
+
+/* optional: show a zoom cursor on uploaded images */
+.pm-preview.is-custom .pm-preview-img {
+    cursor: zoom-in;
+}
+
+/* --- Inventory view toggle --- */
+.pmInvToggleBtn:hover {
+    transform: translateY(-1px);
+    background: #f8fafc;
+}
+
+.pmInvToggleBtn.is-active {
+    background: #0f172a;
+    color: #fff;
+    border-color: rgba(15, 23, 42, .35);
+}
+
+/* wrapper */
+.pmInvWrap {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    min-height: 220px;
+    transition: height .28s ease;
+}
+
+/* panes (keep your fade/slide, but we will also shift for edge tabs) */
+.pmInvPane {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity .28s ease, transform .28s ease;
+}
+
+.pmInvPane.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Edge tabs */
+.pmInvEdge {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 56px;
+    height:100%;
+    border: 0;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: width .30s ease, box-shadow .30s ease, background .30s ease;
+    box-shadow: 0 14px 34px rgba(2, 6, 23, .08);
+    backdrop-filter: blur(6px);
+}
+
+.pmInvEdge--right {
+    right: 0;
+    border-left: 1px solid rgba(15, 23, 42, .10);
+}
+
+.pmInvEdge--left {
+    left: 0;
+    border-right: 1px solid rgba(15, 23, 42, .10);
+}
+
+/* vertical text */
+.pmInvEdgeText {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: 950;
+    letter-spacing: .12em;
+    font-size: 12px;
+    opacity: .92;
+}
+
+/* Themes */
+.pmInvEdge--right {
+    background: linear-gradient(180deg, rgba(99, 102, 241, .14), rgba(14, 165, 233, .10), #fff);
+    color: #0f172a;
+}
+
+.pmInvEdge--left {
+    background: linear-gradient(180deg, rgba(244, 63, 94, .14), rgba(251, 113, 133, .10), #fff);
+    color: #0f172a;
+}
+
+/* Hover: expand a little */
+.pmInvEdge:hover {
+    width: 86px;
+    box-shadow: 0 22px 60px rgba(2, 6, 23, .14);
+}
+
+/* --- When switching: we expand the clicked edge to a big panel feel --- */
+.pmInvWrap.is-switching-to-sold .pmInvEdge--right {
+    width: min(360px, 72vw);
+    /* expands toward left */
+    background: linear-gradient(180deg, rgba(244, 63, 94, .20), rgba(251, 113, 133, .14), #fff);
+    box-shadow: -18px 0 60px rgba(2,6,23,.18);
+}
+
+.pmInvWrap.is-switching-to-stock .pmInvEdge--left {
+    width: min(360px, 72vw);
+    /* expands toward right */
+    background: linear-gradient(180deg, rgba(99, 102, 241, .18), rgba(14, 165, 233, .12), #fff);
+    box-shadow: -18px 0 60px rgba(2,6,23,.18);
+}
+
+/* show only one edge depending on active view */
+.pmInvWrap[data-view="stock"] .pmInvEdge--left {
+    display: none;
+}
+
+.pmInvWrap[data-view="sold"] .pmInvEdge--right {
+    display: none;
+}
+
+/* Give content space so tiles never hide behind edge bar */
+.pmInvWrap[data-view="stock"] #invSummaryStock {
+    padding-right: 70px;
+}
+
+.pmInvWrap[data-view="sold"] #invSummarySold {
+    padding-left: 70px;
+}
+
+/* Mobile: reduce edge width */
+@media (max-width: 640px) {
+    .pmInvEdge {
+        width: 44px;
+    }
+
+    .pmInvEdge:hover {
+        width: 64px;
+    }
+
+    .pmInvWrap[data-view="stock"] #invSummaryStock {
+        padding-right: 56px;
+    }
+
+    .pmInvWrap[data-view="sold"] #invSummarySold {
+        padding-left: 56px;
+    }
+}
+
+/* --- Sold summary meta (modern) --- */
+.pmSoldMeta{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(15,23,42,.03);
+  border: 1px solid rgba(15,23,42,.08);
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
+  gap: 8px;
 }
 
-.pm-cur-toggle{
-  display: inline-flex;
-  border: 1px solid rgba(255,255,255,.16);
-  background: rgba(255,255,255,.08);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.pm-cur{
-  position: relative;
-}
-
-.pm-cur input{
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pm-cur span{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 42px;              /* matches .pm-btn height */
-  padding: 0 10px;
+.pmSoldRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
   font-size: 12px;
   font-weight: 900;
-  color: rgba(255,255,255,.85);
-  cursor: pointer;
-  user-select: none;
+  color:#0f172a;
 }
 
-.pm-cur input:checked + span{
-  background: rgba(255,255,255,.16);
+.pmSoldKey{
+  color:#64748b;
+  font-weight: 800;
+}
+
+.pmSoldVal{
+  font-weight: 950;
+}
+
+.pmSoldDiff{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.10);
+  background:#fff;
+  font-weight: 950;
+  justify-content:flex-end;
+}
+
+.pmDiffGood{
+  background: rgba(16,185,129,.12);
+  border-color: rgba(16,185,129,.30);
+  color: #065f46;
+}
+
+.pmDiffBad{
+  background: rgba(244,63,94,.12);
+  border-color: rgba(244,63,94,.30);
+  color: #9f1239;
+}
+
+.pmDiffSame{
+  background: rgba(100,116,139,.10);
+  border-color: rgba(100,116,139,.25);
+  color: #334155;
+}
+
+.pm-sold-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:34px;
+  height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  font-weight:950;
+  font-size:12px;
+  background:rgba(15,23,42,.06);
+  border:1px solid rgba(15,23,42,.10);
+  color:#0f172a;
+}
+
+.pm-sold-badge.is-zero{ opacity:.45; }
+
+.pm-table th, .pm-table td{
+  white-space: nowrap;
+}
+
+.pm-table td.pm-col-supplier,
+.pm-table td.pm-col-beneficiary{
+  white-space: normal;            /* allow wrap for long names */
+}
+
+.pm-diff-pill{
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  font-size: 13px;
+  border: 1px solid rgba(15,23,42,.10);
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 10px 18px rgba(2,6,23,.06);
+}
+
+.pm-diff-neutral{
+  background: rgba(100,116,139,.10);
+  border-color: rgba(100,116,139,.22);
+  color: #334155;
+}
+
+.pm-diff-profit{
+  background: rgba(16,185,129,.12);
+  border-color: rgba(16,185,129,.35);
+  color: #065f46;
+}
+
+.pm-diff-loss{
+  background: rgba(244,63,94,.12);
+  border-color: rgba(244,63,94,.35);
+  color: #9f1239;
+}
+
+.pm-sell-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.pm-sold-locate-btn{
+  height: 38px;
+  min-width: 44px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(16,185,129,.22);
+  background: rgba(16,185,129,.08);
+  color: #065f46;
+  font-weight: 950;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 10px 18px rgba(2,6,23,.06);
+  transition: .15s ease;
+}
+.pm-sold-locate-btn:hover{ background: rgba(16,185,129,.12); transform: translateY(-1px); }
+
+.pm-sell-icons{ display:flex; gap:10px; margin-left:auto; }
+
+.pm-sell-iconbtn{
+  width: 42px;
+  height: 38px;
+  border-radius: 14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border: 1px solid rgba(15,23,42,.10);
+  background:#fff;
+  color:#0f172a;
+  box-shadow: 0 10px 18px rgba(2,6,23,.06);
+  transition:.15s ease;
+}
+.pm-sell-iconbtn:hover{ background:#f8fafc; transform: translateY(-1px); }
+
+.pm-sell-iconbtn--upload{ border-color: rgba(14,165,233,.25); }
+.pm-sell-iconbtn--view{ border-color: rgba(99,102,241,.25); }
+
+.pm-sell-iconbtn[disabled]{ opacity:.45; cursor:not-allowed; box-shadow:none; transform:none; }
+
+.pm-sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);
+  white-space:nowrap;border:0;
+}
+
+/* whole item becomes sold (strong red tint) */
+.pm-item-wrap.is-sold{
+  background: linear-gradient(180deg, rgba(127,29,29,.22), rgba(244,63,94,.10)) !important;
+  border: 1px solid rgba(244,63,94,.28) !important;
+  box-shadow: 0 18px 38px rgba(244,63,94,.12) !important;
+  color: rgba(15,23,42,.72);
+}
+
+/* Make inner surface slightly tinted too (optional) */
+.pm-item-wrap.is-sold .pm-items-surface{
+  background: rgba(255,241,242,.55) !important;
+  border-color: rgba(244,63,94,.18) !important;
+}
+
+/* sold wrapper: reduce text intensity */
+.pm-item-wrap.is-sold .pm-items-label,
+.pm-item-wrap.is-sold .pm-preview-title,
+.pm-item-wrap.is-sold .pm-preview-sub,
+.pm-item-wrap.is-sold .pm-items-badge{
+  color: rgba(15,23,42,.55) !important;
+}
+
+/* Sold badge color (no ice blue) */
+.pm-item-wrap.is-sold .pm-items-badge{
+  background: rgba(244,63,94,.85) !important;
+  color: #fff !important;
+}
+
+/* inputs/select text a bit softer (not whole opacity so backgrounds stay nice) */
+.pm-item-wrap.is-sold input,
+.pm-item-wrap.is-sold textarea,
+.pm-item-wrap.is-sold select,
+.pm-item-wrap.is-sold .dd2-label{
+  color: rgba(15,23,42,.65) !important;
+}
+
+/* keep profit/loss and action buttons fully visible */
+.pm-item-wrap.is-sold .pm-diff-pill,
+.pm-item-wrap.is-sold .pmSoldDiff,
+.pm-item-wrap.is-sold .pm-sold-locate-btn,
+.pm-item-wrap.is-sold .pm-sell-iconbtn{
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+/* right panel: distribute nicely when stretched */
+.pm-items-surface > .grid {
+  height: 100%;
+}
+
+/* CLOSED badge (top-left) */
+.pm-item-closed{
+  position:absolute;
+  top: 12px;
+  right: 58px;  /* leave space for pencil */
+  left: auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 950;
+  background: rgba(15,23,42,.78);
   color: #fff;
+  z-index: 5;
 }
 
-.pm-cur span:hover{
-  background: rgba(255,255,255,.12);
+/* Edit button (top-right) */
+.pm-item-editbtn{
+  position:absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.92);
+  color:#0f172a;
+  display:grid;
+  place-items:center;
+  box-shadow: 0 12px 24px rgba(2,6,23,.10);
+  z-index: 6;
+  transition: .15s ease;
+}
+.pm-item-editbtn:hover{
+  transform: translateY(-1px);
+  background:#fff;
+}
+
+/* CLOSED state: lower visibility + block editing */
+.pm-item-wrap.is-locked{
+  opacity: .78;
+  filter: saturate(.90);
+  cursor: not-allowed;
+}
+
+/* Locked state: show not-allowed cursor */
+.pm-item-wrap.is-locked input,
+.pm-item-wrap.is-locked textarea,
+.pm-item-wrap.is-locked select,
+.pm-item-wrap.is-locked .dd2-btn,
+.pm-item-wrap.is-locked .pm-preview-img,
+.pm-item-wrap.is-locked .pm-preview-iconbtn,
+.pm-item-wrap.is-locked .pm-sell-iconbtn,
+.pm-item-wrap.is-locked .pm-diff-pill{
+  cursor: not-allowed !important;
+}
+
+/* In locked mode: allow ONLY locate button + preview buttons */
+.pm-item-wrap.is-locked .pm-sold-locate-btn,
+.pm-item-wrap.is-locked .pm-preview-iconbtn{
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+/* In locked mode: sell upload/view must be disabled */
+.pm-item-wrap.is-locked .pm-sell-iconbtn{
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  opacity: .45 !important;
+}
+
+/* Locked: disable preview image zoom + make it feel disabled */
+.pm-item-wrap.is-locked .pm-preview-img {
+  pointer-events: none;
+  cursor: not-allowed !important;
+  filter: saturate(.9);
+}
+
+/* Locked: disable image upload/remove buttons */
+.pm-item-wrap.is-locked .pm-preview-iconbtn {
+  pointer-events: none !important;
+  opacity: .45 !important;
+}
+
+/* Locked: disable sell upload/view icon buttons */
+.pm-item-wrap.is-locked .pm-sell-iconbtn {
+  pointer-events: none !important;
+  opacity: .45 !important;
+}
+
+/* Locked: difference pill should also look disabled */
+.pm-item-wrap.is-locked .pm-diff-pill {
+  opacity: .75;
+}
+
+/* But allow ONLY these to be clickable */
+.pm-item-wrap.is-locked .pm-item-editbtn,
+.pm-item-wrap.is-locked .pm-sold-locate-btn { /* if you want locate always allowed */
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
 }
